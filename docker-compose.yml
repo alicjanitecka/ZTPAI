@@ -2,31 +2,24 @@ version: '3.8'
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./petzone_backend
+    container_name: backend
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend/petzone_backend:/app/petzone_backend
-    networks:
-      - petzone_network
+      - .env
+    # Usuń mapowanie wolumenu developmentowego
+    # volumes:
+    #   - ./petzone_backend:/app
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    stdin_open: true
+    build: ./petzone_frontend
+    container_name: frontend
     ports:
-      - "3000:3000"
-    env_file:
-      - ./frontend/.env
+      - "3000:80"
+    depends_on:
+      - backend
     volumes:
-      - ./frontend/petzone_frontend:/app/petzone_frontend
-    networks:
-      - petzone_network
-
-networks:
-  petzone_network:
-    driver: bridge
+      - .:/app
+      - ./node_modules:/app/node_modules
