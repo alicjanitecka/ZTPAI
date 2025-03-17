@@ -20,7 +20,11 @@ const LoginForm = () => {
         { headers: { 'Content-Type': 'application/json' } }
       );
       console.log(response.data);
-      alert(response.data.message); // Wyświetl komunikat
+      if (response.status === 200) {
+        alert(response.data.message); 
+      } else if (response.status === 401) {
+        setError(response.data.error); 
+      }
     } catch (error) {
       console.error('Błąd:', error.response?.data);
       setError(error.response?.data?.error || 'Wystąpił błąd');
