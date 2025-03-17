@@ -30,6 +30,7 @@ services:
     volumes:
       - .:/app
       - ./node_modules:/app/node_modules
+      - ./petzone_app/migrations:/app/petzone_app/migrations
   pgadmin:
     image: dpage/pgadmin4
     environment:
