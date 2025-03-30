@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
+    if (!email || !password) {
       setError("Proszę podać nazwę użytkownika i hasło");
       return;
     }
   
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/login/',
-        { username, password },
+        'http://localhost:8000/api/token/',
+        { email, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
       console.log(response.data);
       if (response.status === 200) {
-        alert(response.data.message); 
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        navigate('/dashboard');
       } else if (response.status === 401) {
-        setError(response.data.error); 
+        setError(response.data.error || 'Nieprawidłowy e-mail lub hasło');
       }
     } catch (error) {
       console.error('Błąd:', error.response?.data);
@@ -34,8 +38,8 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Nazwa użytkownika:
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        E-mail:
+        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
       </label>
       <br />
       <label>

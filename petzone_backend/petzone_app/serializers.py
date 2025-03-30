@@ -1,10 +1,20 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate
+
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=255)
+    email = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=255)
 
     def validate(self, data):
-        if not data.get('username') or not data.get('password'):
-            raise serializers.ValidationError("Brak nazwy użytkownika lub hasła")
+        email = data.get('email')
+        password = data.get('password')
+        if email and password:
+            user = authenticate(email=email, password=password)
+            if user:
+                data['user'] = user
+            else:
+                raise serializers.ValidationError("Nieprawidłowy e-mail lub hasło")
+        else:
+            raise serializers.ValidationError("Musisz podać e-mail i hasło")
         return data

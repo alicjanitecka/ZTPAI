@@ -3,6 +3,8 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    first_name = models.CharField(max_length=100, blank=True, null=True) 
+    last_name = models.CharField(max_length=100, blank=True, null=True) 
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
@@ -10,7 +12,6 @@ class CustomUser(AbstractUser):
     house_number = models.CharField(max_length=20, blank=True, null=True)
     apartment_number = models.CharField(max_length=20, blank=True, null=True)
     postal_code = models.CharField(max_length=10, blank=True, null=True)
-
     class Meta:
         db_table = 'user'
 
@@ -60,7 +61,7 @@ class Visit(models.Model):
     end_date = models.DateField()
     confirmed = models.BooleanField(default=False)
     canceled = models.BooleanField(default=False)
-    pets = models.JSONField()  # Django nie obsługuje listy INT jako array[], ale można użyć JSONField
+    pets = models.JSONField() 
 
     class Meta:
         db_table = 'visit'
