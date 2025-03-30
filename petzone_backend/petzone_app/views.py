@@ -11,8 +11,7 @@ class LoginView(APIView):
             username = serializer.validated_data.get('username')
             password = serializer.validated_data.get('password')
             user = authenticate(request, username=username, password=password)
-            print(f"Autentykacja dla: {username}, user: {user}")
             if user is not None:
-                return Response({"message": "Zalogowano pomyślniee!"}, status=status.HTTP_200_OK)
+                return Response({"message": "Zalogowano pomyślnie!"}, status=status.HTTP_200_OK)
             return Response({"error": "Nieprawidłowa nazwa użytkownika lub hasło"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
