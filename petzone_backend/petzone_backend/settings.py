@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'petzone_app',
     'rest_framework',
+    # 'rest_framework_simplejwt',
     'corsheaders',
 ]
 
@@ -87,6 +88,11 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'PORT': os.getenv('DB_PORT'),
+        # 'NAME': 'mydb',
+        # 'USER': 'myuser',
+        # 'PASSWORD': 'mypassword',
+        # 'HOST': 'db',
+        # 'PORT': '5432',
     }
 }
 
@@ -154,3 +160,9 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 AUTH_USER_MODEL = 'petzone_app.CustomUser'
+AUTHENTICATION_BACKENDS = [
+
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+

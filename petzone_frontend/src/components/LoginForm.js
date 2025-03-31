@@ -3,22 +3,22 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!username || !password) {
       setError("Proszę podać nazwę użytkownika i hasło");
       return;
     }
   
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/token/',
-        { email, password },
+        'http://localhost:8000/api/login/',
+        { username, password },
         { headers: { 'Content-Type': 'application/json' } }
       );
       console.log(response.data);
@@ -38,8 +38,8 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        E-mail:
-        <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+        Username:
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
       </label>
       <br />
       <label>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
+import LoginForm  from './components/LoginForm';
 import Dashboard from './components/Dashboard';
 
 function App() {

@@ -3,23 +3,27 @@ version: '3.8'
 services:
   db:
     image: postgres:14
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
       interval: 5s
       timeout: 5s
       retries: 5
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
   backend:
     build: ./petzone_backend
-    command: sh -c "./wait-for-db.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "./wait-for-db.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
     container_name: backend
     ports:
-      - "8000:8000"
+      - "8000:8001"
     env_file:
       - .env
     depends_on:
