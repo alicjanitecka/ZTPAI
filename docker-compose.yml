@@ -1,55 +1,69 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:14
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./Backend/db_init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: mydb
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      test: ["CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
       interval: 5s
       timeout: 5s
       retries: 5
-    # env_file:
-    #   - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-  backend:
-    build: ./petzone_backend
-    command: sh -c "./wait-for-db.sh && python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
-    container_name: backend
-    ports:
-      - "8000:8001"
-    env_file:
-      - .env
-    depends_on:
-      - db
+    networks:
+      - main_network
 
-  frontend:
-    stdin_open: true
-    build: ./petzone_frontend
-    container_name: frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
-    volumes:
-      - .:/app
-      - ./node_modules:/app/node_modules
-      - ./petzone_app/migrations:/app/petzone_app/migrations
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
       - db
+    networks:
+      - main_network
+
+  backend:
+    build: ./backend
+    command: ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 backend.wsgi"]
+    volumes:
+      - ./backend:/app
+      - ./backend/static:/app/static
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+    networks:
+      - main_network
+    env_file:
+      - .env 
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - REACT_APP_API_URL=http://backend:8000
+    networks:
+      - main_network
+
+networks:
+  main_network:
+    driver: bridge
 
 volumes:
   postgres_data:
