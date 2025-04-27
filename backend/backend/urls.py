@@ -10,6 +10,8 @@ from rest_framework import permissions
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.conf.urls import handler400, handler403, handler404, handler500
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -36,3 +38,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+handler400 = 'api.views.bad_request'
+handler403 = 'api.views.permission_denied'
+handler404 = 'api.views.page_not_found'
+handler500 = 'api.views.server_error'
