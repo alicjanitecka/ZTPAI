@@ -1,22 +1,16 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth.models import User
 
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+    phone = models.CharField(max_length=30, blank=True)
+    city = models.CharField(max_length=100, blank=True)
+    street = models.CharField(max_length=100, blank=True)
+    house_number = models.CharField(max_length=10, blank=True)
+    apartment_number = models.CharField(max_length=10, blank=True)
+    postal_code = models.CharField(max_length=20, blank=True)
 
-
-# class User(models.Model):
-#     username = models.CharField(max_length=150, unique=True)
-#     password = models.CharField(max_length=128)
-
-#     def __str__(self):
-#         return self.username
-    
-    
-# class Note(models.Model):
-#     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notes')
-#     title = models.CharField(max_length=255)
-#     content = models.TextField()
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-
-#     def __str__(self):
-#         return self.title
+    def __str__(self):
+        return self.username
+    class Meta:
+        db_table = 'user'

@@ -7,6 +7,7 @@ import LoadingIndicator from "./LoadingIndicator";
 
 function Form({ route, method }) {
     const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -18,7 +19,10 @@ function Form({ route, method }) {
         e.preventDefault();
 
         try {
-            const res = await api.post(route, { username, password })
+            const data = method === "login" 
+                ? { username, password } 
+                : { username, email, password };
+                const res = await api.post(route, data)
             if (method === "login") {
                 localStorage.setItem(ACCESS_TOKEN, res.data.access);
                 localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
@@ -36,6 +40,16 @@ function Form({ route, method }) {
     return (
         <form onSubmit={handleSubmit} className="form-container">
             <h1>{name}</h1>
+            {method === "register" && ( 
+                <input
+                    className="form-input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                    required
+                />
+            )}
             <input
                 className="form-input"
                 type="text"

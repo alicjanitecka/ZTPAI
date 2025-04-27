@@ -9,3 +9,4 @@ PyJWT
 pytz
 sqlparse
 python-dotenv
+drf-yasg

@@ -6,6 +6,7 @@ import "../styles/Home.css"
 function Home() {
     const [users, setUsers] = useState([]);
     const [newUsername, setNewUsername] = useState('');
+    const [newEmail, setNewEmail] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [creating, setCreating] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
@@ -33,8 +34,13 @@ function Home() {
         setCreating(true);
         setErrorMsg(''); 
         try {
-            await api.post('/api/user/register/', { username: newUsername, password: newPassword });
+            await api.post('/api/user/register/', { 
+                username: newUsername, 
+                email: newEmail,
+                password: newPassword 
+            });
             setNewUsername('');
+            setNewEmail('');
             setNewPassword('');
             alert('Użytkownik utworzony pomyślnie!'); 
             await fetchUsers(); 
@@ -76,6 +82,13 @@ function Home() {
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
                     placeholder="Nowy username"
+                    required 
+                />
+                   <input
+                    type="email" 
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="Nowy email"
                     required 
                 />
                 <input
