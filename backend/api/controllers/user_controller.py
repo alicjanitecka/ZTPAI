@@ -39,3 +39,6 @@ class UserDetailView(APIView):
             serializer = UserListDetailSerializer(user)
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+

@@ -39,7 +39,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-handler400 = 'api.views.bad_request'
-handler403 = 'api.views.permission_denied'
-handler404 = 'api.views.page_not_found'
-handler500 = 'api.views.server_error'
+handler400 = 'api.error_handlers.bad_request'
+handler403 = 'api.error_handlers.permission_denied'
+handler404 = 'api.error_handlers.page_not_found'
+handler500 = 'api.error_handlers.server_error'
