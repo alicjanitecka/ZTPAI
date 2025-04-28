@@ -26,6 +26,7 @@ jobs:
           --health-retries 5
 
     env:
+      PYTHONPATH: ${{ github.workspace }}/backend
       DJANGO_SETTINGS_MODULE: backend.backend.settings
       POSTGRES_DB: test_db
       POSTGRES_USER: test_user
@@ -55,10 +56,12 @@ jobs:
 
     - name: Run migrations
       run: |
+        export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
         python manage.py migrate
       working-directory: backend
 
     - name: Run tests
       run: |
+        export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
         pytest --ds=backend.settings --cov=api
       working-directory: backend
