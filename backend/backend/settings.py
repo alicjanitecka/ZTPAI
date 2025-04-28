@@ -102,11 +102,11 @@ if DATABASE_URL:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': parsed_url.path[1:], 
-            'USER': parsed_url.username,
-            'PASSWORD': parsed_url.password,
-            'HOST': parsed_url.hostname,
-            'PORT': parsed_url.port,
+            'NAME': os.getenv('POSTGRES_DB', 'test_db'),
+            'USER': os.getenv('POSTGRES_USER', 'test_user'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'test_pass'),
+            'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+            'PORT': os.getenv('POSTGRES_PORT', 5432),
         }
     }
 CORS_ALLOWED_ORIGINS = [
