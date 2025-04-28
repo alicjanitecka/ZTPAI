@@ -49,6 +49,10 @@ jobs:
         pip install -r requirements.txt
       working-directory: backend
 
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+      working-directory: backend
+
     - name: Wait for DB
       run: |
         until pg_isready -h localhost -p 5432; do
