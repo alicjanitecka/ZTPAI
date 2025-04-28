@@ -33,7 +33,6 @@ jobs:
       POSTGRES_PASSWORD: test_pass
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
-      PYTHONPATH: ${{ github.workspace }}/backend
 
     steps:
     - uses: actions/checkout@v4
@@ -56,11 +55,15 @@ jobs:
         done
 
     - name: Run migrations
+      working-directory: backend
       run: |
-        python backend/manage.py migrate
+        python manage.py migrate
 
 
     - name: Run tests
+      working-directory: backend
+      env:
+        PYTHONPATH: .
       run: |
-        pytest backend --ds=backend.settings --cov=backend/api
+        pytest api --ds=backend.settings --cov=api
 
