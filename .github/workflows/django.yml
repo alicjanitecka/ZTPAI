@@ -27,7 +27,7 @@ jobs:
 
     env:
       DATABASE_URL: postgres://test_user:test_pass@localhost:5432/test_db
-      PYTHONPATH: ${{ github.workspace }}/backend
+      PYTHONPATH: ${{ github.workspace }}
       DJANGO_SETTINGS_MODULE: backend.settings
       POSTGRES_DB: test_db
       POSTGRES_USER: test_user
