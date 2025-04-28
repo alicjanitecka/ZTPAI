@@ -33,7 +33,7 @@ jobs:
       POSTGRES_PASSWORD: test_pass
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
-      PYTHONPATH: ${{ github.workspace }}
+      PYTHONPATH: ${{ github.workspace }}/backend
 
     steps:
     - uses: actions/checkout@v4
