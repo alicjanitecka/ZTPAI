@@ -19,5 +19,5 @@ def api_client():
     return APIClient()
 
 @pytest.fixture
-def custom_user_factory(db):  # Dodaj 'db' jako zależność
+def custom_user_factory(db):  
     return CustomUserFactory
