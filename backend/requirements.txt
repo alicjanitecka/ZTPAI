@@ -10,3 +10,6 @@ pytz
 sqlparse
 python-dotenv
 drf-yasg
+pytest-django==4.5.2
+factory-boy==3.3.0
+pytest-factoryboy==2.5.0
