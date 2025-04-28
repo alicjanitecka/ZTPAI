@@ -56,7 +56,9 @@ jobs:
     - name: Run migrations
       run: |
         python manage.py migrate
+      working-directory: backend
 
     - name: Run tests
       run: |
         pytest --ds=backend.settings --cov=api
+      working-directory: backend
