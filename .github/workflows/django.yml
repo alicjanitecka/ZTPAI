@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
     env:
-      PYTHONPATH: ${{ github.workspace }}
+      PYTHONPATH: ${{ github.workspace }}/backend
       DJANGO_SETTINGS_MODULE: backend.settings
       POSTGRES_DB: test_db
       POSTGRES_USER: test_user
