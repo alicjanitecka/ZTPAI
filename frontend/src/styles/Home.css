@@ -66,3 +66,32 @@ div {
   form input[type="submit"]:hover {
     background-color: #0056b3;
   }
+  .table-container {
+    max-width: 600px;      /* szerokość maksymalna */
+    margin: 2rem auto;     /* wyśrodkowanie */
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-table th,
+  .user-table td {
+    border: 1px solid #333;
+    padding: 0.7rem 1.2rem;
+    text-align: left;
+  }
+  
+  .user-table th {
+    background: #f5f5f5;
+  }
+  
+  .user-table tr:nth-child(even) {
+    background: #fafafa;
+  }
+  

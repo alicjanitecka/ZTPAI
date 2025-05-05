@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import api from "../api";
 import { Link } from 'react-router-dom';
 import "../styles/Home.css"
+import { jwtDecode } from "jwt-decode";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+
 
 function Home() {
+    const [isAdmin, setIsAdmin] = useState(false);
     const [users, setUsers] = useState([]);
     const [newUsername, setNewUsername] = useState('');
     const [newEmail, setNewEmail] = useState('');
@@ -28,7 +32,13 @@ function Home() {
     useEffect(() => {
         fetchUsers();
     }, []); 
-
+    useEffect(() => {
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        if (token) {
+            const decoded = jwtDecode(token);
+            setIsAdmin(decoded.role === 'admin'); 
+        }
+    }, []);
     const handleCreateUser = async (e) => {
         e.preventDefault();
         setCreating(true);
@@ -69,10 +79,19 @@ function Home() {
         await fetchUsers(); 
         setRefreshing(false);
     };
-
+    const handleDelete = async (userId) => {
+        if (!window.confirm("Na pewno chcesz usunąć użytkownika?")) return;
+        try {
+            await api.delete(`/api/user/${userId}/delete/`);
+            await fetchUsers();
+        } catch (error) {
+            alert("Błąd podczas usuwania użytkownika.");
+        }
+    };
+    
     return (
         <div>
-            <h1>Lista użytkowników</h1>
+            <h1>Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
 
@@ -107,20 +126,44 @@ function Home() {
             <button onClick={handleRefresh} disabled={refreshing || creating}>
                 {refreshing ? 'Odświeżanie...' : 'Odśwież'}
             </button>
-            <ul>
-            {users.length > 0 ? (
+
+
+
+            <div className="table-container">
+            <table className="user-table">
+                <thead>
+                    <tr>
+                    <th>Username</th>
+                    <th>Rola</th>
+                    {isAdmin && <th>Akcje</th>}
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.length > 0 ? (
                     users.map(user => (
-                        <li key={user.id}>
-                            {/* Make username a link to the detail page */}
-                            <Link to={`/users/${user.id}`}>
-                                {user.username}
-                            </Link>
-                        </li>
+                        <tr key={user.id}>
+                        <td>
+                            <Link to={`/users/${user.id}`}>{user.username}</Link>
+                        </td>
+                        <td style={{ fontWeight: "bold" }}>{user.role}</td>
+                        {isAdmin && (
+                            <td>
+                            <button onClick={() => handleDelete(user.id)}>Usuń</button>
+                            </td>
+                        )}
+                        </tr>
                     ))
-                ) : (
-                    <li>Brak użytkowników do wyświetlenia lub błąd ładowania.</li>
-                )}
-            </ul>
+                    ) : (
+                    <tr>
+                        <td colSpan={isAdmin ? 3 : 2}>Brak użytkowników do wyświetlenia lub błąd ładowania.</td>
+                    </tr>
+                    )}
+                </tbody>
+                </table>
+                </div>
+
+
+
         </div>
     );
 }

@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, UserListView, UserDetailView
+from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api.serializers import CustomTokenObtainPairSerializer
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -30,8 +31,9 @@ urlpatterns = [
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("api/user/register/", CreateUserView.as_view(), name="register"),
     path("api/home/", UserListView.as_view(), name="home"),
+    path("api/user/<int:pk>/delete/", UserDeleteView.as_view(), name="delete_user"),
     path("api/users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
-    path("api/token/", TokenObtainPairView.as_view(), name="get_token"),
+    path("api/token/", TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer), name="get_token"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
 ]

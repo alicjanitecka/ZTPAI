@@ -39,3 +39,15 @@ class UserDetailView(APIView):
             serializer = UserListDetailSerializer(user)
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class UserDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, pk):
+        user = UserService().get_user(pk)
+        if not user:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        if request.user.role != 'admin':
+            return Response({"error": "Brak uprawnień"}, status=status.HTTP_403_FORBIDDEN)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
