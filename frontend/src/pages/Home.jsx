@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import "../styles/Home.css"
 import { jwtDecode } from "jwt-decode";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { useNavigate } from "react-router-dom";
 
 
 function Home() {
@@ -15,6 +16,13 @@ function Home() {
     const [creating, setCreating] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        navigate("/login");
+    };
 
     const fetchUsers = async () => {
 
@@ -91,6 +99,10 @@ function Home() {
     
     return (
         <div>
+        <button onClick={handleLogout} style={{ float: "right", marginBottom: "1rem" }}>
+            Wyloguj
+        </button>
+        <h1>Lista użytkowników</h1>
             <h1>Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}

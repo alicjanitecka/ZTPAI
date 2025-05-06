@@ -162,3 +162,15 @@ CORS_ALLOW_CREDENTIALS = True
 AUTH_USER_MODEL = 'api.CustomUser'
 
 SWAGGER_USE_COMPAT_RENDERERS = False
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT authorization with Bearer scheme. Example: "Bearer <token>"',
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
