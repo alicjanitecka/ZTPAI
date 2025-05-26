@@ -102,7 +102,6 @@ function Home() {
         <button onClick={handleLogout} style={{ float: "right", marginBottom: "1rem" }}>
             Wyloguj
         </button>
-        <h1>Lista użytkowników</h1>
             <h1>Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}

@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600&display=swap');
+
+
+/* Reset i podstawowe fonty */
+body {
+    margin: 0;
+    font-family: 'Jura', sans-serif;
+    background-color: #f7f4f0;
+}
+
+.login-wrapper {
+    display: flex;
+    height: 100vh;
+}
+
+.login-left {
+    flex: 1;
+    background-color: #eae5df;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 60px;
+}
+
+.login-title {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #5b5856;
+    margin-top: 144px;
+    letter-spacing: 0.8px;
+    font-family: 'Jura', sans-serif;
+}
+
+.login-form {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 194px;
+}
+
+.login-form input {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f6f4;
+    font-size: 0.95rem;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+    color: #888;
+}
+
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.forgot-link {
+    color: #a3968b;
+    text-decoration: none;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.login-button {
+    background-color: #b7ab9e;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login-footer {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #5f5f5f;
+}
+
+.login-footer a {
+    color: #84786c;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+.login-right {
+    flex: 1;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-logo {
+    width: 272px;
+    height: auto;
+    margin-bottom: 16px;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    color: #948a80;
+    letter-spacing: 1px;
+}
