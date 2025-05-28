@@ -19,3 +19,20 @@ class CustomUser(AbstractUser):
         return self.username
     class Meta:
         db_table = 'user'
+
+
+class Petsitter(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='petsitter_profile')
+    description = models.TextField(blank=True)
+    is_dog_sitter = models.BooleanField(default=False)
+    is_cat_sitter = models.BooleanField(default=False)
+    is_rodent_sitter = models.BooleanField(default=False)
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    care_at_owner_home = models.BooleanField(default=False)
+    care_at_petsitter_home = models.BooleanField(default=False)
+    dog_walking = models.BooleanField(default=False)
+
+class PetsitterAvailability(models.Model):
+    petsitter = models.ForeignKey(Petsitter, on_delete=models.CASCADE, related_name='availabilities')
+    date = models.DateField()
+    is_available = models.BooleanField(default=True)   

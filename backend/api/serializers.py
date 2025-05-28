@@ -1,5 +1,5 @@
 
-from api.models import CustomUser
+from api.models import CustomUser, Petsitter
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -38,3 +38,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['role'] = user.role
         return token
+    
+class PetsitterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username')
+    city = serializers.CharField(source='user.city')
+
+    class Meta:
+        model = Petsitter
+        fields = [
+            'id', 'username', 'city', 'description', 'hourly_rate',
+            'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
+            'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking'
+        ]

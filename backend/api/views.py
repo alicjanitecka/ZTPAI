@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer
+from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer
+from api.repositories.petsitter_repository import PetsitterRepository
 from api.services.user_service import UserService
 
 class CreateUserView(APIView):
@@ -51,3 +52,15 @@ class UserDeleteView(APIView):
             return Response({"error": "Brak uprawnień"}, status=status.HTTP_403_FORBIDDEN)
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class PetsitterSearchView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        city = request.query_params.get('city')
+        pet_type = request.query_params.get('pet_type')
+        care_type = request.query_params.get('care_type')
+        date = request.query_params.get('date')
+        petsitters = PetsitterRepository().search(city, pet_type, care_type, date)
+        serializer = PetsitterSerializer(petsitters, many=True)
+        return Response(serializer.data)
