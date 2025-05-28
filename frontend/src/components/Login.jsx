@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Login.css";
-import logo from "../assets/logo.svg"; // załaduj logo SVG
+import logo from "../assets/logo.svg";
 
 function Login() {
     // const [email, setEmail] = useState("");
