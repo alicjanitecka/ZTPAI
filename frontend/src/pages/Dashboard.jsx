@@ -7,34 +7,8 @@ import sitterCare from "../assets/petsitter-care.svg";
 import walkDog from "../assets/dog-walking.svg";
 import defaultAvatar from "../assets/default-avatar.svg";
 import { FaSearch } from "react-icons/fa";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 
-const [showModal, setShowModal] = useState(false);
-const [selectedPetsitter, setSelectedPetsitter] = useState(null);
-const handleBookClick = (petsitter) => {
-  setSelectedPetsitter(petsitter);
-  setShowModal(true);
-};
-const handleConfirmBooking = async () => {
-  if (!selectedPetsitter) return;
-  try {
-    // Przykład payloadu, dostosuj do swojego modelu!
-    const payload = {
-      petsitter_id: selectedPetsitter.id,
-      date, // z Twojego stanu filtra
-      // Możesz dodać inne pola, np. user_id, pet_type, itp.
-    };
-    await axios.post("http://localhost:8000/api/visits/", payload);
-    alert("Wizyta została zarezerwowana!");
-    setShowModal(false);
-    setSelectedPetsitter(null);
-  } catch (err) {
-    alert("Błąd podczas rezerwacji wizyty.");
-  }
-};
-const handleCancelBooking = () => {
-  setShowModal(false);
-  setSelectedPetsitter(null);
-};
 
 function buildServices(p) {
   let arr = [];
@@ -59,8 +33,52 @@ function Dashboard() {
     const [city, setCity] = useState("");
     const [petType, setPetType] = useState("");
     const [careType, setCareType] = useState("");
-    const [date, setDate] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [results, setResults] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedPetsitter, setSelectedPetsitter] = useState(null);
+    const handleBookClick = (petsitter) => {
+    setSelectedPetsitter(petsitter);
+    setShowModal(true);
+    };
+const handleConfirmBooking = async () => {
+  if (!selectedPetsitter || !startDate || !endDate || !careType) {
+    alert("Uzupełnij wszystkie dane rezerwacji!");
+    return;
+  }
+  try {
+    const token = localStorage.getItem("access");
+    const userId = localStorage.getItem("user_id"); 
+    const payload = {
+      user: userId,
+      petsitter: selectedPetsitter.id,
+      care_type: careType,
+      start_date: startDate,
+      end_date: endDate,
+      confirmed: false,
+      canceled: false,
+      pets: [],
+    };
+    await axios.post(
+      "http://localhost:8000/api/visits/",
+      payload,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert("Wizyta została zarezerwowana!");
+    setShowModal(false);
+    setSelectedPetsitter(null);
+  } catch (err) {
+    if (err.response) {
+      console.log("Error response data:", err.response.data);
+    }
+    alert("Błąd podczas rezerwacji wizyty.");
+  }
+};
+const handleCancelBooking = () => {
+  setShowModal(false);
+  setSelectedPetsitter(null);
+};
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -70,14 +88,19 @@ function Dashboard() {
             if (city) params.city = city;
             if (petType) params.pet_type = petType;
             if (careType) params.care_type = careType;
-            if (date) params.date = date;
+            if (startDate) params.start_date = startDate;
+            if (endDate) params.end_date = endDate;
             const res = await axios.get("http://localhost:8000/api/petsitters/search/", { params });
             console.log("API response:", res.data);
             setResults(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
-            alert("Błąd podczas wyszukiwania petsitterów");
-            setResults([])
+        if (err.response) {
+                alert("Błąd podczas rezerwacji wizyty.");
+            } else {
+                alert("Błąd podczas rezerwacji wizyty.");
+            }
         }
+
     };
 
     return (
@@ -98,8 +121,19 @@ function Dashboard() {
 
             <div className="filters-background">
                 <form className="filters" onSubmit={handleSearch}>
-                    <input type="date" value={date} onChange={e => setDate(e.target.value)} />
-                    {/* Możesz dodać drugi date picker jeśli chcesz zakres */}
+                    <input
+                    type="date"
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                    placeholder="Start date"
+                    />
+                    <input
+                    type="date"
+                    value={endDate}
+                    onChange={e => setEndDate(e.target.value)}
+                    placeholder="End date"
+                    />
+
                     <input
                         type="text"
                         placeholder="enter the city"
@@ -174,23 +208,23 @@ function Dashboard() {
                 </div>
             </div>
             )}
+            {showModal && selectedPetsitter && (
+            <div className="modal-overlay">
+                <div className="modal">
+                <h3>Potwierdź rezerwację</h3>
+                <p>
+                    Czy na pewno chcesz zarezerwować wizytę u <b>{selectedPetsitter.username}</b>
+                    {startDate && <> w dniach <b>{endDate}</b></>}?
+                </p>
+                <div className="modal-actions">
+                    <button onClick={handleConfirmBooking} className="confirm-btn">Tak, rezerwuję</button>
+                    <button onClick={handleCancelBooking} className="cancel-btn">Anuluj</button>
+                </div>
+                </div>
+            </div>
+            )}
         </div>
     );
 }
-{showModal && selectedPetsitter && (
-  <div className="modal-overlay">
-    <div className="modal">
-      <h3>Potwierdź rezerwację</h3>
-      <p>
-        Czy na pewno chcesz zarezerwować wizytę u <b>{selectedPetsitter.username}</b>
-        {date && <> na dzień <b>{date}</b></>}?
-      </p>
-      <div className="modal-actions">
-        <button onClick={handleConfirmBooking} className="confirm-btn">Tak, rezerwuję</button>
-        <button onClick={handleCancelBooking} className="cancel-btn">Anuluj</button>
-      </div>
-    </div>
-  </div>
-)}
 
 export default Dashboard;

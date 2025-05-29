@@ -41,3 +41,18 @@ class PetsitterAvailability(models.Model):
     class Meta:
         db_table = 'petsitter_availability'
 
+class Visit(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    petsitter = models.ForeignKey('Petsitter', on_delete=models.CASCADE)
+    care_type = models.CharField(max_length=50)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    confirmed = models.BooleanField(default=False)
+    canceled = models.BooleanField(default=False)
+    pets = models.JSONField(default=list)  
+
+    class Meta:
+        db_table = 'visit'
+
+    def __str__(self):
+        return f"Visit: {self.user} with {self.petsitter} ({self.start_date} - {self.end_date})"

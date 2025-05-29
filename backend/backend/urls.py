@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView
+from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 
@@ -37,6 +37,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
     path("api/petsitters/search/", PetsitterSearchView.as_view(), name="petsitter_search"),
+    path('api/visits/', VisitCreateView.as_view(), name='visit_create'),
 ]
 
 if settings.DEBUG:

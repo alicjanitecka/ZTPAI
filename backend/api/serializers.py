@@ -1,5 +1,5 @@
 
-from api.models import CustomUser, Petsitter
+from api.models import CustomUser, Petsitter, Visit
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -50,3 +50,8 @@ class PetsitterSerializer(serializers.ModelSerializer):
             'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
             'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking'
         ]
+class VisitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Visit
+        fields = '__all__'
+        read_only_fields = ['user']

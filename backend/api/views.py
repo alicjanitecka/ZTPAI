@@ -1,7 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import generics
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer
+from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer
+from api.models import Visit
 from api.repositories.petsitter_repository import PetsitterRepository
 from api.services.user_service import UserService
 
@@ -64,3 +66,9 @@ class PetsitterSearchView(APIView):
         petsitters = PetsitterRepository().search(city, pet_type, care_type, date)
         serializer = PetsitterSerializer(petsitters, many=True)
         return Response(serializer.data)
+
+class VisitCreateView(generics.CreateAPIView):
+    queryset = Visit.objects.all()
+    serializer_class = VisitSerializer
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
