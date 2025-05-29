@@ -125,3 +125,150 @@ body {
     margin: 0 auto;
     width: fit-content;
 }
+.search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 900px;
+    margin: 38px auto 0 auto;
+}
+
+.petsitter-result {
+    display: flex;
+    align-items: center;
+    background: #f7f4f0;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    padding: 26px 32px;
+    min-height: 120px;
+    position: relative;
+    background-color: #eae5df;
+}
+
+.petsitter-avatar {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    background: #d6cdc2;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 32px;
+}
+
+.petsitter-avatar img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    filter: grayscale(0.8);
+}
+
+.petsitter-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.petsitter-name-age {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: #5b5856;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.petsitter-age {
+    margin-left: 4px;
+    color: #b7ab9e;
+    font-weight: 600;
+}
+
+.petsitter-experience,
+.petsitter-services,
+.petsitter-location {
+    font-size: 1rem;
+    color: #5c5c5c;
+}
+
+.petsitter-services b,
+.petsitter-location b,
+.petsitter-experience b {
+    color: #5b5856;
+    font-weight: 600;
+}
+
+.petsitter-action {
+    margin-left: 36px;
+    display: flex;
+    align-items: center;
+}
+
+.book-btn {
+    background: #b7ab9e;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.book-btn:hover {
+    background: #a08c6b;
+}
+
+.plus-icon {
+    font-size: 1.3em;
+    margin-right: 6px;
+    font-weight: 700;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff;
+  border-radius: 18px;
+  padding: 34px 38px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.15);
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+}
+.modal-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+.confirm-btn {
+  background: #b7ab9e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.cancel-btn {
+  background: #eae5df;
+  color: #5c5c5c;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-weight: 700;
+  cursor: pointer;
+}

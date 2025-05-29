@@ -5,7 +5,53 @@ import logo from "../assets/logo.svg";
 import homeCare from "../assets/home-care.svg"; 
 import sitterCare from "../assets/petsitter-care.svg";
 import walkDog from "../assets/dog-walking.svg";
+import defaultAvatar from "../assets/default-avatar.svg";
 import { FaSearch } from "react-icons/fa";
+
+const [showModal, setShowModal] = useState(false);
+const [selectedPetsitter, setSelectedPetsitter] = useState(null);
+const handleBookClick = (petsitter) => {
+  setSelectedPetsitter(petsitter);
+  setShowModal(true);
+};
+const handleConfirmBooking = async () => {
+  if (!selectedPetsitter) return;
+  try {
+    // Przykład payloadu, dostosuj do swojego modelu!
+    const payload = {
+      petsitter_id: selectedPetsitter.id,
+      date, // z Twojego stanu filtra
+      // Możesz dodać inne pola, np. user_id, pet_type, itp.
+    };
+    await axios.post("http://localhost:8000/api/visits/", payload);
+    alert("Wizyta została zarezerwowana!");
+    setShowModal(false);
+    setSelectedPetsitter(null);
+  } catch (err) {
+    alert("Błąd podczas rezerwacji wizyty.");
+  }
+};
+const handleCancelBooking = () => {
+  setShowModal(false);
+  setSelectedPetsitter(null);
+};
+
+function buildServices(p) {
+  let arr = [];
+  if (p.dog_walking) arr.push("walking the dog");
+  if (p.is_cat_sitter) arr.push("cat care");
+  if (p.is_dog_sitter) arr.push("dog care");
+  // Dodaj inne usługi zgodnie z modelem
+  return arr.join(", ") || "N/A";
+}
+
+function buildLocation(p) {
+  let arr = [];
+  if (p.care_at_petsitter_home) arr.push("at pet sitter’s home");
+  if (p.care_at_owner_home) arr.push("at owner's home");
+  // Dodaj inne lokalizacje, jeśli są
+  return arr.join(" / ") || "N/A";
+}
 
 function Dashboard() {
     const [searched, setSearched] = useState(false);
@@ -77,27 +123,39 @@ function Dashboard() {
                     </button>
                 </form>
             </div>
-            {/* Wyniki wyszukiwania */}
+            {searched && (
             <div className="search-results">
-                {searched && results.length === 0 && <p>No petsitters found.</p>}
+                {results.length === 0 && <p>No petsitters found.</p>}
                 {results.map(p => (
-                    <div key={p.id} className="petsitter-card">
-                        <h4>{p.username} ({p.city})</h4>
-                        <p>{p.description}</p>
-                        <p>
-                            <strong>Dog sitter:</strong> {p.is_dog_sitter ? "Yes" : "No"}<br />
-                            <strong>Cat sitter:</strong> {p.is_cat_sitter ? "Yes" : "No"}<br />
-                            <strong>Rodent sitter:</strong> {p.is_rodent_sitter ? "Yes" : "No"}
-                        </p>
-                        <p>
-                            <strong>Care at owner's home:</strong> {p.care_at_owner_home ? "Yes" : "No"}<br />
-                            <strong>Care at petsitter's home:</strong> {p.care_at_petsitter_home ? "Yes" : "No"}<br />
-                            <strong>Dog walking:</strong> {p.dog_walking ? "Yes" : "No"}
-                        </p>
-                        <p><strong>Hourly rate:</strong> {p.hourly_rate ? `${p.hourly_rate} zł` : "Not set"}</p>
+                <div key={p.id} className="petsitter-result">
+                    <div className="petsitter-avatar">
+                        <img src={defaultAvatar} alt="avatar" />
+                    </div>
+                    <div className="petsitter-info">
+                        <div className="petsitter-name-age">
+                        {p.username && <span className="petsitter-name">{p.username.toUpperCase()}</span>}
+                        {p.age && <span className="petsitter-age">({p.age})</span>}
+                        </div>
+                        <div className="petsitter-experience">
+                        <b>Experience:</b> {p.experience ? `${p.experience} years` : "N/A"}
+                        </div>
+                        <div className="petsitter-services">
+                        <b>Services offered:</b> {p.services || buildServices(p)}
+                        </div>
+                        <div className="petsitter-location">
+                        <b>Service Location:</b> {p.location || buildLocation(p)}
+                        </div>
+                    </div>
+                    <div className="petsitter-action">
+                    <button className="book-btn" onClick={() => handleBookClick(p)}>
+                    <span className="plus-icon">+</span> book now
+                    </button>
+                    </div>
                     </div>
                 ))}
             </div>
+            )}
+            {!searched && (
             <div className="services">
                 <div className="card">
                     <h3>Care at your home</h3>
@@ -115,8 +173,24 @@ function Dashboard() {
                     <a href="#">Find out more...</a>
                 </div>
             </div>
+            )}
         </div>
     );
 }
+{showModal && selectedPetsitter && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h3>Potwierdź rezerwację</h3>
+      <p>
+        Czy na pewno chcesz zarezerwować wizytę u <b>{selectedPetsitter.username}</b>
+        {date && <> na dzień <b>{date}</b></>}?
+      </p>
+      <div className="modal-actions">
+        <button onClick={handleConfirmBooking} className="confirm-btn">Tak, rezerwuję</button>
+        <button onClick={handleCancelBooking} className="cancel-btn">Anuluj</button>
+      </div>
+    </div>
+  </div>
+)}
 
 export default Dashboard;

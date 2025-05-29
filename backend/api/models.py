@@ -31,8 +31,13 @@ class Petsitter(models.Model):
     care_at_owner_home = models.BooleanField(default=False)
     care_at_petsitter_home = models.BooleanField(default=False)
     dog_walking = models.BooleanField(default=False)
+    class Meta:
+        db_table = 'petsitter'
 
 class PetsitterAvailability(models.Model):
     petsitter = models.ForeignKey(Petsitter, on_delete=models.CASCADE, related_name='availabilities')
     date = models.DateField()
     is_available = models.BooleanField(default=True)   
+    class Meta:
+        db_table = 'petsitter_availability'
+
