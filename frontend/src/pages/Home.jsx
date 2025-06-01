@@ -17,12 +17,12 @@ function Home() {
     const [refreshing, setRefreshing] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
 
-    const navigate = useNavigate();
-    const handleLogout = () => {
-        localStorage.removeItem(ACCESS_TOKEN);
-        localStorage.removeItem(REFRESH_TOKEN);
-        navigate("/login");
-    };
+    // const navigate = useNavigate();
+    // const handleLogout = () => {
+    //     localStorage.removeItem(ACCESS_TOKEN);
+    //     localStorage.removeItem(REFRESH_TOKEN);
+    //     navigate("/login");
+    // };
 
     const fetchUsers = async () => {
 
@@ -99,9 +99,9 @@ function Home() {
     
     return (
         <div>
-        <button onClick={handleLogout} style={{ float: "right", marginBottom: "1rem" }}>
+        {/* <button onClick={handleLogout} style={{ float: "right", marginBottom: "1rem" }}>
             Wyloguj
-        </button>
+        </button> */}
             <h1>Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}

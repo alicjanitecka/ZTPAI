@@ -8,6 +8,9 @@ import walkDog from "../assets/dog-walking.svg";
 import defaultAvatar from "../assets/default-avatar.svg";
 import { FaSearch } from "react-icons/fa";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { Link } from "react-router-dom";
+
+<Link to="/logout">WYLOGUJ</Link>
 
 
 function buildServices(p) {
@@ -107,10 +110,10 @@ const handleCancelBooking = () => {
         <div className="dashboard">
 <nav className="top-nav">
 
-                <a href="#">MOJE WIZYTY</a>
-                <a href="#">DOŁĄCZ JAKO PETSITTER</a>
+                <a href="/visits">MOJE WIZYTY</a>
+                <a href="join-petsitter">DOŁĄCZ JAKO PETSITTER</a>
                 <a href="#">MOJE KONTO</a>
-                <a href="#">WYLOGUJ</a>
+                <a href="/logout">WYLOGUJ</a>
             </nav>
 
             <header className="header">

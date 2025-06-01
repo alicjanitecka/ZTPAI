@@ -4,13 +4,16 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import NotFound from "./pages/NotFound"
-import UserDetail from './pages/UserDetail';
+import UserDetail from './pages/UserDetail'
 import ProtectedRoute from "./components/ProtectedRoute"
+import Visits from "./pages/Visits";
+import Logout from "./components/Logout"
+import JoinAsPetsitter from "./pages/JoinAsPetsitter";
 
-function Logout() {
-  localStorage.clear()
-  return <Navigate to="/login" />
-}
+// function Logout() {
+//   localStorage.clear()
+//   return <Navigate to="/login" />
+// }
 
 function RegisterAndLogout() {
   localStorage.clear()
@@ -24,6 +27,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<RegisterAndLogout />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/visits" element={<Visits />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/join-petsitter" element={<JoinAsPetsitter />} />
         <Route path="*" element={<NotFound />}></Route>
         <Route
                     path="/"

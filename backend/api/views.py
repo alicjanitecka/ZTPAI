@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status, permissions
 from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer
-from api.models import Visit
+from api.models import Visit, Petsitter
 from api.repositories.petsitter_repository import PetsitterRepository
 from api.services.user_service import UserService
+from django.db import models
 
 class CreateUserView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -70,5 +72,35 @@ class PetsitterSearchView(APIView):
 class VisitCreateView(generics.CreateAPIView):
     queryset = Visit.objects.all()
     serializer_class = VisitSerializer
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class VisitListView(generics.ListAPIView):
+    serializer_class = VisitSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Visit.objects.filter(
+            models.Q(user=user) | models.Q(petsitter__user=user)
+        ).order_by('-start_date')
+    
+class VisitUpdateView(generics.UpdateAPIView):
+    serializer_class = VisitSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Visit.objects.all()
+    def perform_update(self, serializer):
+        visit = self.get_object()
+        user = self.request.user
+        # Pozwól tylko właścicielowi lub petsitterowi na zmianę
+        if visit.user != user and visit.petsitter.user != user:
+            raise PermissionDenied("Nie masz uprawnień do modyfikacji tej wizyty.")
+        serializer.save()    
+
+class PetsitterCreateView(generics.CreateAPIView):
+    serializer_class = PetsitterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Petsitter.objects.all()
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

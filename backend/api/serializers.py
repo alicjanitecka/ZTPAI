@@ -40,8 +40,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
     
 class PetsitterSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username')
-    city = serializers.CharField(source='user.city')
+    username = serializers.CharField(source='user.username', read_only=True)
+    city = serializers.CharField(source='user.city', read_only=True)
 
     class Meta:
         model = Petsitter
@@ -50,6 +50,8 @@ class PetsitterSerializer(serializers.ModelSerializer):
             'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
             'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking'
         ]
+        read_only_fields = ['user']
+
 class VisitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Visit
