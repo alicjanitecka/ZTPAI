@@ -3,8 +3,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer, UserProfileSerializer
-from api.models import Visit, Petsitter, CustomUser
+from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer, UserProfileSerializer, PetSerializer
+from api.models import Visit, Petsitter, CustomUser, Pet
 from api.repositories.petsitter_repository import PetsitterRepository
 from api.services.user_service import UserService
 from django.db import models
@@ -111,3 +111,20 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+class PetListCreateView(generics.ListCreateAPIView):
+    serializer_class = PetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Pet.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class PetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Pet.objects.filter(user=self.request.user)

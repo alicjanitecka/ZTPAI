@@ -56,3 +56,16 @@ class Visit(models.Model):
 
     def __str__(self):
         return f"Visit: {self.user} with {self.petsitter} ({self.start_date} - {self.end_date})"
+    
+class Pet(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    age = models.PositiveIntegerField()
+    breed = models.CharField(max_length=100, blank=True)
+    additional_info = models.TextField(blank=True)
+    photo_url = models.CharField(max_length=255, blank=True)
+    pet_type = models.CharField(max_length=10)  
+    class Meta:
+        db_table = 'pet'
+    def __str__(self):
+        return f"{self.name} ({self.pet_type})"
