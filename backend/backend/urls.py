@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView, VisitListView, VisitUpdateView, PetsitterCreateView
+from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView, VisitListView, VisitUpdateView, PetsitterCreateView, UserProfileView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
-
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework import permissions
@@ -41,7 +40,7 @@ urlpatterns = [
     path('api/my-visits/', VisitListView.as_view(), name='my-visits'),
     path('api/visits/<int:pk>/', VisitUpdateView.as_view(), name='visit-update'),
     path('api/petsitters/', PetsitterCreateView.as_view(), name='petsitter-create'),
-
+    path('api/profile/', UserProfileView.as_view(), name='user-profile'),
 ]
 
 if settings.DEBUG:

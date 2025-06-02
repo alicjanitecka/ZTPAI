@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute"
 import Visits from "./pages/Visits";
 import Logout from "./components/Logout"
 import JoinAsPetsitter from "./pages/JoinAsPetsitter";
+import MyAccount from "./components/MyAccount";
 
 // function Logout() {
 //   localStorage.clear()
@@ -31,6 +32,7 @@ function App() {
         <Route path="/visits" element={<Visits />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/join-petsitter" element={<JoinAsPetsitter />} />
+        <Route path="/account" element={<MyAccount />} />
         <Route path="*" element={<NotFound />}></Route>
         <Route
                     path="/"

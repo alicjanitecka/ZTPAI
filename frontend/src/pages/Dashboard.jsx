@@ -112,7 +112,7 @@ const handleCancelBooking = () => {
 
                 <a href="/visits">MOJE WIZYTY</a>
                 <a href="join-petsitter">DOŁĄCZ JAKO PETSITTER</a>
-                <a href="#">MOJE KONTO</a>
+                <a href="/account">MOJE KONTO</a>
                 <a href="/logout">WYLOGUJ</a>
             </nav>
 
