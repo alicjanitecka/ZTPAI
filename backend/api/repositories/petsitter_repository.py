@@ -2,6 +2,20 @@ from django.db.models import Q
 from api.models import Petsitter, PetsitterAvailability
 
 class PetsitterRepository:
+    def get_by_user(self, user):
+        return Petsitter.objects.filter(user=user).first()
+
+    def create(self, user, **kwargs):
+        return Petsitter.objects.create(user=user, **kwargs)
+
+    def update(self, petsitter, **kwargs):
+        for key, value in kwargs.items():
+            setattr(petsitter, key, value)
+        petsitter.save()
+        return petsitter
+
+    def delete(self, petsitter):
+        petsitter.delete()
     def search(self, city=None, pet_type=None, care_type=None, date=None):
         qs = Petsitter.objects.select_related('user').all()
 
@@ -22,7 +36,5 @@ class PetsitterRepository:
         elif care_type == 'care_at_petsitter_home':
             qs = qs.filter(care_at_petsitter_home=True)
 
-        # if date:
-        #     qs = qs.filter(availabilities__date=date, availabilities__is_available=True)
 
         return qs.distinct()

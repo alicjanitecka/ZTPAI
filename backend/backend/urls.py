@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView, VisitListView, VisitUpdateView, PetsitterCreateView, UserProfileView, PetListCreateView, PetUpdateDeleteView, PetsitterMeView, PetsitterAvailabilityListCreateView, PetsitterAvailabilityUpdateDeleteView
+from api.controllers.petsitter_controller import PetsitterMeView
+from api.controllers.user_controller import CreateUserView, UserListView, UserDetailView, UserDeleteView
+from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterCreateView, UserProfileView
+from api.views import CreateUserView, UserListView, UserDetailView, VisitCreateView, VisitListView, VisitUpdateView,  PetListCreateView, PetUpdateDeleteView, PetsitterMeView, PetsitterAvailabilityListCreateView, PetsitterAvailabilityUpdateDeleteView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
