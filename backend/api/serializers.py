@@ -33,6 +33,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return user
     
 class UserProfileSerializer(serializers.ModelSerializer):
+    is_petsitter = serializers.SerializerMethodField()
+    def get_is_petsitter(self, obj):
+        return Petsitter.objects.filter(user=obj).exists()
     class Meta:
         model = CustomUser  #
         fields = [
@@ -46,6 +49,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'house_number',
             'apartment_number',
             'postal_code',
+            'is_petsitter'
         ]
         read_only_fields = ['id', 'email']
 

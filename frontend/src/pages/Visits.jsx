@@ -6,7 +6,7 @@ import defaultAvatar from "../assets/default-avatar.svg";
 import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 
-<Link to="/logout">WYLOGUJ</Link>
+<Link to="/logout">LOGOUT</Link>
 
 function Visits() {
   const [visits, setVisits] = useState([]);
@@ -30,14 +30,14 @@ function Visits() {
     fetchVisits();
   }, []);
 
-  // Potwierdzenie/Anulowanie
+
   const updateVisit = async (id, data) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
       await axios.patch(`http://localhost:8000/api/visits/${id}/`, data, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchVisits(); // odśwież listę
+      fetchVisits(); 
     } catch (err) {
       alert("Błąd podczas aktualizacji wizyty");
     }
@@ -47,20 +47,20 @@ function Visits() {
     <div className="dashboard">
       <nav className="top-nav">
         <Link to="/">HOME</Link>
-        <Link to="/visits">MOJE WIZYTY</Link>
-        <a href="join-petsitter">DOŁĄCZ JAKO PETSITTER</a>
-        <a href="#">MOJE KONTO</a>
-        <a href="/logout">WYLOGUJ</a>
+        <Link to="/visits">MY VISITS</Link>
+        <a href="join-petsitter">JOIN AS PETSITTER</a>
+        <a href="#">MY ACCOUNT</a>
+        <a href="/logout">LOGOUT</a>
       </nav>
       <header className="header">
         <div className="logo-container">
           <img src={logo} alt="PetZone Logo" className="logo" />
         </div>
       </header>
-      <h2 style={{textAlign: "center", marginTop: 30}}>Moje wizyty</h2>
+      <h2 style={{textAlign: "center", marginTop: 30}}>MY VISITS</h2>
       <div className="search-results">
-        {loading && <p>Ładowanie wizyt...</p>}
-        {!loading && visits.length === 0 && <p>Brak wizyt.</p>}
+        {loading && <p>Loading...</p>}
+        {!loading && visits.length === 0 && <p>No visits.</p>}
         {visits.map(v => (
           <div key={v.id} className="petsitter-result">
             <div className="petsitter-avatar">
@@ -73,10 +73,10 @@ function Visits() {
                 </span>
               </div>
               <div>
-                <b>Typ opieki:</b> {v.care_type}
+                <b>Care type:</b> {v.care_type}
               </div>
               <div>
-                <b>Data:</b> {v.start_date} - {v.end_date}
+                <b>Date:</b> {v.start_date} - {v.end_date}
               </div>
               <div>
                 <b>Status:</b>{" "}
@@ -97,13 +97,13 @@ function Visits() {
                     className="book-btn"
                     onClick={() => updateVisit(v.id, { confirmed: true })}
                   >
-                    Potwierdź
+                    Confirm
                   </button>
                   <button
                     className="cancel-btn"
                     onClick={() => updateVisit(v.id, { canceled: true })}
                   >
-                    Anuluj
+                    Cancel
                   </button>
                 </>
               )}

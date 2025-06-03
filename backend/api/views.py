@@ -128,3 +128,10 @@ class PetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Pet.objects.filter(user=self.request.user)
+    
+class PetsitterMeView(generics.RetrieveUpdateAPIView):
+    serializer_class = PetsitterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return Petsitter.objects.get(user=self.request.user)    

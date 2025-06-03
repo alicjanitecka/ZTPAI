@@ -110,10 +110,10 @@ const handleCancelBooking = () => {
         <div className="dashboard">
 <nav className="top-nav">
 
-                <a href="/visits">MOJE WIZYTY</a>
-                <a href="join-petsitter">DOŁĄCZ JAKO PETSITTER</a>
-                <a href="/account">MOJE KONTO</a>
-                <a href="/logout">WYLOGUJ</a>
+                <a href="/visits">MY VISITS</a>
+                <a href="join-petsitter">JOIN AS PETSITTER</a>
+                <a href="/account">MY ACCOUNT</a>
+                <a href="/logout">LOGOUT</a>
             </nav>
 
             <header className="header">

@@ -39,7 +39,7 @@ function JoinAsPetsitter() {
           },
         }
       );
-      alert("Zostałeś petsitterem! 🎉");
+      alert("Zostałeś petsitterem!");
       navigate("/");
     } catch (err) {
   if (err.response) {
@@ -54,10 +54,10 @@ function JoinAsPetsitter() {
   return (
     <div className="login-wrapper">
       <div className="login-left">
-        <h2 className="login-title">DOŁĄCZ JAKO PETSITTER</h2>
+        <h2 className="login-title">JOIN AS PETSITTER</h2>
         <form onSubmit={handleSubmit} className="login-form">
           <textarea
-            placeholder="Opisz siebie i swoje doświadczenie"
+            placeholder="Describe yourself and your experience with pets..."
             value={description}
             onChange={e => setDescription(e.target.value)}
             required
@@ -67,22 +67,22 @@ function JoinAsPetsitter() {
           <div style={{ marginBottom: 12 }}>
             <label>
               <input type="checkbox" checked={isDogSitter} onChange={e => setIsDogSitter(e.target.checked)} />
-              Opieka nad psami
+             Dog care
             </label>
             <label style={{ marginLeft: 18 }}>
               <input type="checkbox" checked={isCatSitter} onChange={e => setIsCatSitter(e.target.checked)} />
-              Opieka nad kotami
+              Cat care
             </label>
             <label style={{ marginLeft: 18 }}>
               <input type="checkbox" checked={isRodentSitter} onChange={e => setIsRodentSitter(e.target.checked)} />
-              Opieka nad gryzoniami
+              Rodent care
             </label>
           </div>
           <input
             type="number"
             min="0"
             step="1"
-            placeholder="Stawka za godzinę (zł)"
+            placeholder="Rate per hour (in PLN)"
             value={hourlyRate}
             onChange={e => setHourlyRate(e.target.value)}
             required
@@ -90,15 +90,15 @@ function JoinAsPetsitter() {
           <div style={{ marginBottom: 12, marginTop: 8 }}>
             <label>
               <input type="checkbox" checked={careAtOwnerHome} onChange={e => setCareAtOwnerHome(e.target.checked)} />
-              Opieka w domu właściciela
+              Care at owner's home
             </label>
             <label style={{ marginLeft: 18 }}>
               <input type="checkbox" checked={careAtPetsitterHome} onChange={e => setCareAtPetsitterHome(e.target.checked)} />
-              Opieka u petsittera
+              Care at petsitter's home
             </label>
             <label style={{ marginLeft: 18 }}>
               <input type="checkbox" checked={dogWalking} onChange={e => setDogWalking(e.target.checked)} />
-              Wyprowadzanie psa
+              Dog walking
             </label>
           </div>
           <button
@@ -114,7 +114,7 @@ function JoinAsPetsitter() {
           </button>
         </form>
         <p className="login-footer">
-          <a href="/">Powrót na stronę główną</a>
+          <a href="/">Return to home page</a>
         </p>
       </div>
       <div className="login-right">
