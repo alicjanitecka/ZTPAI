@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView, VisitListView, VisitUpdateView, PetsitterCreateView, UserProfileView, PetListCreateView, PetUpdateDeleteView, PetsitterMeView
+from api.views import CreateUserView, UserListView, UserDetailView, UserDeleteView, PetsitterSearchView, VisitCreateView, VisitListView, VisitUpdateView, PetsitterCreateView, UserProfileView, PetListCreateView, PetUpdateDeleteView, PetsitterMeView, PetsitterAvailabilityListCreateView, PetsitterAvailabilityUpdateDeleteView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
@@ -44,6 +44,8 @@ urlpatterns = [
     path('api/pets/', PetListCreateView.as_view(), name='pet-list-create'),
     path('api/pets/<int:pk>/', PetUpdateDeleteView.as_view(), name='pet-update-delete'),
     path('api/petsitters/me/', PetsitterMeView.as_view(), name='petsitter-me'),
+    path('api/petsitter-availability/', PetsitterAvailabilityListCreateView.as_view(), name='petsitter-availability-list-create'),
+    path('api/petsitter-availability/<int:pk>/', PetsitterAvailabilityUpdateDeleteView.as_view(), name='petsitter-availability-update-delete'),
 ]
 
 if settings.DEBUG:

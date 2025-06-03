@@ -3,8 +3,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer, UserProfileSerializer, PetSerializer
-from api.models import Visit, Petsitter, CustomUser, Pet
+from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer, UserProfileSerializer, PetSerializer, PetsitterAvailabilitySerializer
+from api.models import Visit, Petsitter, CustomUser, Pet, PetsitterAvailability
 from api.repositories.petsitter_repository import PetsitterRepository
 from api.services.user_service import UserService
 from django.db import models
@@ -135,3 +135,20 @@ class PetsitterMeView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return Petsitter.objects.get(user=self.request.user)    
+    
+class PetsitterAvailabilityListCreateView(generics.ListCreateAPIView):
+    serializer_class = PetsitterAvailabilitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        petsitter = Petsitter.objects.get(user=self.request.user)
+        return PetsitterAvailability.objects.filter(petsitter=petsitter)
+    def perform_create(self, serializer):
+        petsitter = Petsitter.objects.get(user=self.request.user)
+        serializer.save(petsitter=petsitter)
+        
+class PetsitterAvailabilityUpdateDeleteView(generics.DestroyAPIView):
+    serializer_class = PetsitterAvailabilitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+        petsitter = Petsitter.objects.get(user=self.request.user)
+        return PetsitterAvailability.objects.filter(petsitter=petsitter)

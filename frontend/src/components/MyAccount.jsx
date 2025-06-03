@@ -6,7 +6,12 @@ import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 import "../styles/MyAccount.css";
 
+
+
 function MyAccount() {
+  const [availabilityDate, setAvailabilityDate] = useState("");
+const [availabilityList, setAvailabilityList] = useState([]);
+
   const [form, setForm] = useState({
     first_name: "",
     last_name: "",
@@ -66,18 +71,25 @@ function MyAccount() {
         setPets(petsRes.data);
 
         if (res.data.is_petsitter) {
-          const petsitterRes = await axios.get("http://localhost:8000/api/petsitters/me/", {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          setServices(petsitterRes.data);
-        }
-      } catch (err) {
-        alert("Błąd podczas pobierania profilu");
+        const petsitterRes = await axios.get("http://localhost:8000/api/petsitters/me/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setServices(petsitterRes.data);
+
+        const availRes = await axios.get("http://localhost:8000/api/petsitter-availability/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAvailabilityList(availRes.data);
+
+
       }
-      setLoading(false);
-    };
-    fetchProfile();
-  }, []);
+    } catch (err) {
+      alert("Błąd podczas pobierania profilu");
+    }
+    setLoading(false);
+  };
+  fetchProfile();
+}, []);
 
   const tabs = isPetsitter
     ? ["personal data", "my pets", "services"]
@@ -111,6 +123,18 @@ function MyAccount() {
       alert("Błąd przy dodawaniu zwierzęcia");
     }
   };
+const handleDeleteAvailability = async (id) => {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  try {
+    await axios.delete(`http://localhost:8000/api/petsitter-availability/${id}/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    setAvailabilityList(availabilityList.filter(item => item.id !== id));
+  } catch (err) {
+    alert("Błąd przy usuwaniu dostępności");
+  }
+};
 
   const handleServicesChange = e => {
     const { name, type, checked, value } = e.target;
@@ -270,7 +294,7 @@ const handleEditPet = (pet) => {
     if (activeTab === "services" && isPetsitter) {
       return (
         <form className="account-form" onSubmit={handleServicesSubmit}>
-          <h3>Services and avaiability</h3>
+          <h3>Services and availability</h3>
           <label>
             <input type="checkbox" name="is_dog_sitter" checked={services.is_dog_sitter} onChange={handleServicesChange} />
             Dog care
@@ -296,11 +320,70 @@ const handleEditPet = (pet) => {
             <input type="checkbox" name="dog_walking" checked={services.dog_walking} onChange={handleServicesChange} />
             Dog walking
           </label>
-          <textarea name="availability" placeholder="Avaiability" value={services.availability || ""} onChange={handleServicesChange} />
-          <button type="submit" className="account-save-btn">Save</button>
-        </form>
-      );
-    }
+      <h4>Availability (select available days):</h4>
+<div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+  <input
+    type="date"
+    value={availabilityDate}
+    onChange={e => setAvailabilityDate(e.target.value)}
+    style={{ padding: 8, borderRadius: 6, border: "1px solid #ccc" }}
+  />
+  <button
+    type="button"
+    className="account-save-btn"
+    onClick={async () => {
+      if (!availabilityDate) {
+        alert("Select a date first!");
+        return;
+      }
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      try {
+        await axios.post("http://localhost:8000/api/petsitter-availability/", {
+          date: availabilityDate,
+          is_available: true
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        alert("Dostępność zapisana!");
+        const availRes = await axios.get("http://localhost:8000/api/petsitter-availability/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (err) {
+        alert("Błąd przy zapisie dostępności");
+      }
+    }}
+    style={{ marginLeft: 8 }}
+  >
+    Add availability
+  </button>
+</div>
+
+<ul>
+  {availabilityList.map(item => (
+    <li key={item.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <span>{item.date} – {item.is_available ? "Available" : "Unavailable"}</span>
+      <button
+        type="button"
+        style={{
+          background: "#eae5df",
+          color: "#5c5c5c",
+          border: "none",
+          borderRadius: "8px",
+          padding: "4px 12px",
+          cursor: "pointer"
+        }}
+        onClick={() => handleDeleteAvailability(item.id)}
+      >
+        Cancel
+      </button>
+    </li>
+  ))}
+</ul>
+
+    </form>
+  );
+  
+}
     return null;
   };
 
