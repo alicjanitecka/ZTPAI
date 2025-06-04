@@ -10,6 +10,7 @@ import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
+import api from "../api";
 
 <Link to="/logout">WYLOGUJ</Link>
 
@@ -46,7 +47,7 @@ function Dashboard() {
     setSelectedPetsitter(petsitter);
     setShowModal(true);
     };
-const handleConfirmBooking = async () => {
+    const handleConfirmBooking = async () => {
   if (!selectedPetsitter || !startDate || !endDate || !careType) {
     alert("Uzupełnij wszystkie dane rezerwacji!");
     return;
@@ -113,11 +114,11 @@ const handleCancelBooking = () => {
             setIsAdmin(decoded.role === "admin");
         }
     }, []);
-      useEffect(() => {
+  useEffect(() => {
     const fetchProfile = async () => {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (!token) return;
       try {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (!token) return;
         const res = await api.get("/api/profile/", {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -136,7 +137,7 @@ const handleCancelBooking = () => {
                 )}
                 <a href="/visits">MY VISITS</a>
                 {!isPetsitter && (
-                <a href="join-petsitter">JOIN AS PETSITTER</a>
+                    <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
                 )}
                 <a href="/account">MY ACCOUNT</a>
                 <a href="/logout">LOGOUT</a>

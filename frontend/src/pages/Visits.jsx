@@ -5,12 +5,14 @@ import logo from "../assets/logo.svg";
 import defaultAvatar from "../assets/default-avatar.svg";
 import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
+import api from "../api";
 
 <Link to="/logout">LOGOUT</Link>
 
 function Visits() {
   const [visits, setVisits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPetsitter, setIsPetsitter] = useState(false);
 
   const fetchVisits = async () => {
     setLoading(true);
@@ -30,7 +32,21 @@ function Visits() {
     fetchVisits();
   }, []);
 
-
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (!token) return;
+      try {
+        const res = await api.get("/api/profile/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsPetsitter(res.data.is_petsitter || false);
+      } catch (err) {
+        setIsPetsitter(false);
+      }
+    };
+    fetchProfile();
+  }, []);
   const updateVisit = async (id, data) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
@@ -48,8 +64,10 @@ function Visits() {
       <nav className="top-nav">
         <Link to="/">HOME</Link>
         <Link to="/visits">MY VISITS</Link>
-        <a href="join-petsitter">JOIN AS PETSITTER</a>
-        <a href="#">MY ACCOUNT</a>
+        {!isPetsitter && (
+           <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
+        )}
+        <a href="/account">MY ACCOUNT</a>
         <a href="/logout">LOGOUT</a>
       </nav>
       <header className="header">

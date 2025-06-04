@@ -5,7 +5,7 @@ import defaultAvatar from "../assets/default-avatar.svg";
 import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 import "../styles/MyAccount.css";
-
+import api from "../api";
 
 
 function MyAccount() {
@@ -392,7 +392,9 @@ const handleEditPet = (pet) => {
 <nav className="top-nav">
 
                 <a href="/visits">MY VISITS</a>
-                <a href="join-petsitter">JOIN AS PETSITTER</a>
+                {!isPetsitter && (
+                   <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
+                )}
                 <a href="/account">MY ACCOUNT</a>
                 <a href="/logout">LOGOUT</a>
             </nav>
