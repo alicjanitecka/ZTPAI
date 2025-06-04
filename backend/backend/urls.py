@@ -34,7 +34,7 @@ urlpatterns = [
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     path("api/user/register/", CreateUserView.as_view(), name="register"),
-    path("api/home/", UserListView.as_view(), name="home"),
+    path("api/admin-panel/", UserListView.as_view(), name="admin-panel"),
     path("api/user/<int:pk>/delete/", UserDeleteView.as_view(), name="delete_user"),
     path("api/users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
     path("api/token/", TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer), name="get_token"),
