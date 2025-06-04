@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
@@ -6,7 +6,6 @@ import "../styles/Login.css";
 import logo from "../assets/logo.svg";
 
 function Login() {
-    // const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -26,7 +25,43 @@ function Login() {
         }
     };
 
+const [showExpired, setShowExpired] = useState(false);
+useEffect(() => {
+    const url = new URL(window.location);
+    const expired = url.searchParams.get("expired") === "1";
+
+    if (expired) {
+        setShowExpired(true);
+        setUsername("");
+        setPassword("");
+        url.searchParams.delete("expired");
+        window.history.replaceState({}, "", url);
+    }
+}, []);
+
     return (
+        <div>
+      {showExpired && (
+        <div style={{ color: "red", marginBottom: "1rem" }}>
+          Your session has expired. Please log in again.
+        <button
+                        onClick={() => setShowExpired(false)}
+                        style={{
+                            position: "absolute",
+                            right: 10,
+                            top: 0,
+                            background: "transparent",
+                            border: "none",
+                            fontSize: "1.2rem",
+                            color: "#5c5c5c",
+                            cursor: "pointer"
+                        }}
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+            )}
         <div className="login-wrapper">
             <div className="login-left">
                 <h2 className="login-title">WELCOME BACK!</h2>
@@ -66,6 +101,7 @@ function Login() {
             <div className="login-right">
                 <img src={logo} alt="PetZone Logo" className="login-logo" />
             </div>
+        </div>
         </div>
     );
 }
