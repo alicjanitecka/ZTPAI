@@ -3,8 +3,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status, permissions
-from api.serializers import VisitSerializer, PetsitterAvailabilitySerializer
-from api.models import Visit, Petsitter, Pet, PetsitterAvailability
+from api.serializers import VisitSerializer
+from api.models import Visit
 # from api.repositories.petsitter_repository import PetsitterRepository
 # from api.services.user_service import UserService
 from django.db import models
@@ -44,22 +44,22 @@ class VisitUpdateView(generics.UpdateAPIView):
 
 
 
-class PetsitterAvailabilityListCreateView(generics.ListCreateAPIView):
-    serializer_class = PetsitterAvailabilitySerializer
-    permission_classes = [permissions.IsAuthenticated]
-    def get_queryset(self):
-        petsitter = Petsitter.objects.get(user=self.request.user)
-        return PetsitterAvailability.objects.filter(petsitter=petsitter)
-    def perform_create(self, serializer):
-        petsitter = Petsitter.objects.get(user=self.request.user)
-        serializer.save(petsitter=petsitter)
+# class PetsitterAvailabilityListCreateView(generics.ListCreateAPIView):
+#     serializer_class = PetsitterAvailabilitySerializer
+#     permission_classes = [permissions.IsAuthenticated]
+#     def get_queryset(self):
+#         petsitter = Petsitter.objects.get(user=self.request.user)
+#         return PetsitterAvailability.objects.filter(petsitter=petsitter)
+#     def perform_create(self, serializer):
+#         petsitter = Petsitter.objects.get(user=self.request.user)
+#         serializer.save(petsitter=petsitter)
 
-class PetsitterAvailabilityUpdateDeleteView(generics.DestroyAPIView):
-    serializer_class = PetsitterAvailabilitySerializer
-    permission_classes = [permissions.IsAuthenticated]
-    def get_queryset(self):
-        petsitter = Petsitter.objects.get(user=self.request.user)
-        return PetsitterAvailability.objects.filter(petsitter=petsitter)
+# class PetsitterAvailabilityUpdateDeleteView(generics.DestroyAPIView):
+#     serializer_class = PetsitterAvailabilitySerializer
+#     permission_classes = [permissions.IsAuthenticated]
+#     def get_queryset(self):
+#         petsitter = Petsitter.objects.get(user=self.request.user)
+#         return PetsitterAvailability.objects.filter(petsitter=petsitter)
 
 # class PetsitterMeView(generics.RetrieveUpdateAPIView):
 #     serializer_class = PetsitterSerializer
