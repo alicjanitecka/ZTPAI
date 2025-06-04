@@ -3,10 +3,10 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer, PetsitterSerializer, VisitSerializer, UserProfileSerializer, PetSerializer, PetsitterAvailabilitySerializer
-from api.models import Visit, Petsitter, CustomUser, Pet, PetsitterAvailability
-from api.repositories.petsitter_repository import PetsitterRepository
-from api.services.user_service import UserService
+from api.serializers import VisitSerializer, PetsitterAvailabilitySerializer
+from api.models import Visit, Petsitter, Pet, PetsitterAvailability
+# from api.repositories.petsitter_repository import PetsitterRepository
+# from api.services.user_service import UserService
 from django.db import models
 
 
@@ -41,24 +41,9 @@ class VisitUpdateView(generics.UpdateAPIView):
         serializer.save()    
 
 
-# class UserProfileView(generics.RetrieveUpdateAPIView):
-#     serializer_class = UserProfileSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-
-#     def get_object(self):
-#         return self.request.user
-    
 
 
-class PetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PetSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return Pet.objects.filter(user=self.request.user)
-    
-
-    
 class PetsitterAvailabilityListCreateView(generics.ListCreateAPIView):
     serializer_class = PetsitterAvailabilitySerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -162,3 +147,19 @@ class PetsitterAvailabilityUpdateDeleteView(generics.DestroyAPIView):
 #             return Response({"error": "Brak uprawnień"}, status=status.HTTP_403_FORBIDDEN)
 #         user.delete()
 #         return Response(status=status.HTTP_204_NO_CONTENT)
+# class UserProfileView(generics.RetrieveUpdateAPIView):
+#     serializer_class = UserProfileSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_object(self):
+#         return self.request.user
+    
+# class PetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+#     serializer_class = PetSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_queryset(self):
+#         return Pet.objects.filter(user=self.request.user)
+    
+
+    
