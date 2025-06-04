@@ -5,7 +5,7 @@ from api.controllers.petsitter_availability_controller import PetsitterAvailabil
 from api.controllers.pet_controller import PetListCreateView, PetUpdateDeleteView
 from api.controllers.user_controller import CreateUserView, UserListView, UserDetailView, UserDeleteView, UserProfileView
 from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterCreateView, PetsitterMeView
-from api.views import VisitCreateView, VisitListView, VisitUpdateView
+from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
