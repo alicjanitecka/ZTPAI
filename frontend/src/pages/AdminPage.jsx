@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import api from "../api";
 import { Link } from 'react-router-dom';
-import "../styles/Home.css"
+import "../styles/AdminPage.css";
 import { jwtDecode } from "jwt-decode";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
 
 
-function Home() {
+
+
+function AdminPage() {
+
     const [isAdmin, setIsAdmin] = useState(false);
     const [users, setUsers] = useState([]);
     const [newUsername, setNewUsername] = useState('');
@@ -16,13 +19,6 @@ function Home() {
     const [creating, setCreating] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-
-    // const navigate = useNavigate();
-    // const handleLogout = () => {
-    //     localStorage.removeItem(ACCESS_TOKEN);
-    //     localStorage.removeItem(REFRESH_TOKEN);
-    //     navigate("/login");
-    // };
 
     const fetchUsers = async () => {
 
@@ -96,16 +92,16 @@ function Home() {
             alert("Błąd podczas usuwania użytkownika.");
         }
     };
-    
+    if (!isAdmin) {
+        return <div>Brak uprawnień do zarządzania użytkownikami.</div>;
+    }
     return (
         <div>
-        {/* <button onClick={handleLogout} style={{ float: "right", marginBottom: "1rem" }}>
-            Wyloguj
-        </button> */}
-            <h1>Dodaj użytkownika</h1>
+            <div className="admin-page-container">
+            <h1 className="admin-title">Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
-
+        <div className="admin-form-center">
             <form onSubmit={handleCreateUser}>
                 <input
                     type="text"
@@ -131,13 +127,14 @@ function Home() {
                 <button type="submit" disabled={creating || refreshing}>
                     {creating ? 'Tworzenie...' : 'Utwórz'}
                 </button>
+                
             </form>
 
-            <h2>Istniejący użytkownicy:</h2>
+            <h2 className="admin-title">Istniejący użytkownicy:</h2>
             <button onClick={handleRefresh} disabled={refreshing || creating}>
                 {refreshing ? 'Odświeżanie...' : 'Odśwież'}
             </button>
-
+</div>
 
 
             <div className="table-container">
@@ -145,8 +142,8 @@ function Home() {
                 <thead>
                     <tr>
                     <th>Username</th>
-                    <th>Rola</th>
-                    {isAdmin && <th>Akcje</th>}
+                    <th>Role</th>
+                    {isAdmin && <th>Action</th>}
                     </tr>
                 </thead>
                 <tbody>
@@ -156,7 +153,7 @@ function Home() {
                         <td>
                             <Link to={`/users/${user.id}`}>{user.username}</Link>
                         </td>
-                        <td style={{ fontWeight: "bold" }}>{user.role}</td>
+                        <td>{user.role}</td>
                         {isAdmin && (
                             <td>
                             <button onClick={() => handleDelete(user.id)}>Usuń</button>
@@ -174,9 +171,9 @@ function Home() {
                 </div>
 
 
-
+            </div>
         </div>
     );
 }
 
-export default Home;
+export default AdminPage;

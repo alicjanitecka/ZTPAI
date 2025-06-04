@@ -1,4 +1,3 @@
-import React, {useState} from "react";
 import axios from "axios";
 import "../styles/Dashboard.css";
 import logo from "../assets/logo.svg";
@@ -9,8 +8,11 @@ import defaultAvatar from "../assets/default-avatar.svg";
 import { FaSearch } from "react-icons/fa";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 <Link to="/logout">WYLOGUJ</Link>
+
 
 
 function buildServices(p) {
@@ -18,7 +20,6 @@ function buildServices(p) {
   if (p.dog_walking) arr.push("walking the dog");
   if (p.is_cat_sitter) arr.push("cat care");
   if (p.is_dog_sitter) arr.push("dog care");
-  // Dodaj inne usługi zgodnie z modelem
   return arr.join(", ") || "N/A";
 }
 
@@ -26,13 +27,12 @@ function buildLocation(p) {
   let arr = [];
   if (p.care_at_petsitter_home) arr.push("at pet sitter’s home");
   if (p.care_at_owner_home) arr.push("at owner's home");
-  // Dodaj inne lokalizacje, jeśli są
   return arr.join(" / ") || "N/A";
 }
 
 function Dashboard() {
     const [searched, setSearched] = useState(false);
-
+    const [isAdmin, setIsAdmin] = useState(false);
     const [city, setCity] = useState("");
     const [petType, setPetType] = useState("");
     const [careType, setCareType] = useState("");
@@ -40,6 +40,7 @@ function Dashboard() {
     const [endDate, setEndDate] = useState("");
     const [results, setResults] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [isPetsitter, setIsPetsitter] = useState(false);
     const [selectedPetsitter, setSelectedPetsitter] = useState(null);
     const handleBookClick = (petsitter) => {
     setSelectedPetsitter(petsitter);
@@ -105,13 +106,38 @@ const handleCancelBooking = () => {
         }
 
     };
-
+    useEffect(() => {
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        if (token) {
+            const decoded = jwtDecode(token);
+            setIsAdmin(decoded.role === "admin");
+        }
+    }, []);
+      useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        if (!token) return;
+        const res = await api.get("/api/profile/", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsPetsitter(res.data.is_petsitter || false);
+      } catch (err) {
+        setIsPetsitter(false);
+      }
+    };
+    fetchProfile();
+  }, []);
     return (
         <div className="dashboard">
-<nav className="top-nav">
-
+            <nav className="top-nav">
+                {isAdmin && (
+                    <Link to="/admin-users">ADMIN PANEL</Link>
+                )}
                 <a href="/visits">MY VISITS</a>
+                {!isPetsitter && (
                 <a href="join-petsitter">JOIN AS PETSITTER</a>
+                )}
                 <a href="/account">MY ACCOUNT</a>
                 <a href="/logout">LOGOUT</a>
             </nav>

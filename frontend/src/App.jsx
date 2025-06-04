@@ -10,6 +10,7 @@ import Visits from "./pages/Visits";
 import Logout from "./components/Logout"
 import JoinAsPetsitter from "./pages/JoinAsPetsitter";
 import MyAccount from "./components/MyAccount";
+import AdminPage from "./pages/AdminPage"
 
 // function Logout() {
 //   localStorage.clear()
@@ -33,6 +34,7 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/join-petsitter" element={<JoinAsPetsitter />} />
         <Route path="/account" element={<MyAccount />} />
+        <Route path="/admin-users" element={<AdminPage />} />
         <Route path="*" element={<NotFound />}></Route>
         <Route
                     path="/"
