@@ -1,3 +1,5 @@
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
@@ -7,6 +9,16 @@ from api.services.petsitter_service import PetsitterService
 class PetsitterMeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_description="Get the petsitter profile for the authenticated user.",
+        responses={
+            200: "OK",
+            401: "Unauthorized",
+            403: "Forbidden",
+            404: "Not Found",
+            500: "Internal Server Error",
+        }
+    )
     def get(self, request):
         petsitter = PetsitterService().get_petsitter_for_user(request.user)
         if not petsitter:
@@ -14,6 +26,19 @@ class PetsitterMeView(APIView):
         serializer = PetsitterSerializer(petsitter)
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        operation_description="Update the petsitter profile for the authenticated user (partial update).",
+        request_body=PetsitterSerializer,
+        responses={
+            200: "OK",
+            400: "Bad Request",
+            401: "Unauthorized",
+            403: "Forbidden",
+            404: "Not Found",
+            422: "Unprocessable Entity",
+            500: "Internal Server Error",
+        }
+    )
     def patch(self, request):
         petsitter = PetsitterService().get_petsitter_for_user(request.user)
         if not petsitter:
@@ -28,6 +53,22 @@ class PetsitterMeView(APIView):
 class PetsitterSearchView(APIView):
     permission_classes = [permissions.AllowAny]
 
+    @swagger_auto_schema(
+        operation_description="Search for petsitters by city, pet type, care type, and date.",
+        manual_parameters=[
+            openapi.Parameter('city', openapi.IN_QUERY, description="City", type=openapi.TYPE_STRING),
+            openapi.Parameter('pet_type', openapi.IN_QUERY, description="Pet type", type=openapi.TYPE_STRING),
+            openapi.Parameter('care_type', openapi.IN_QUERY, description="Care type", type=openapi.TYPE_STRING),
+            openapi.Parameter('date', openapi.IN_QUERY, description="Date (YYYY-MM-DD)", type=openapi.TYPE_STRING),
+        ],
+        responses={
+            200: "OK",
+            400: "Bad Request",
+            404: "Not Found",
+            422: "Unprocessable Entity",
+            500: "Internal Server Error",
+        }
+    )
     def get(self, request):
         city = request.query_params.get('city')
         pet_type = request.query_params.get('pet_type')
@@ -40,6 +81,19 @@ class PetsitterSearchView(APIView):
 class PetsitterCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_description="Register the authenticated user as a petsitter.",
+        request_body=PetsitterSerializer,
+        responses={
+            201: "Created",
+            400: "Bad Request",
+            401: "Unauthorized",
+            403: "Forbidden",
+            409: "Conflict",
+            422: "Unprocessable Entity",
+            500: "Internal Server Error",
+        }
+    )
     def post(self, request):
         serializer = PetsitterSerializer(data=request.data)
         if serializer.is_valid():
