@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from api.serializers import UserCreateSerializer, UserListDetailSerializer
+from api.serializers import UserCreateSerializer, UserListDetailSerializer, UserProfileSerializer
 from api.services.user_service import UserService
 
 class CreateUserView(APIView):
@@ -40,5 +40,28 @@ class UserDetailView(APIView):
             return Response(serializer.data)
         return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
 
+class UserDeleteView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
+    def delete(self, request, pk):
+        user = UserService().get_user(pk)
+        if not user:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        if request.user.role != 'admin':
+            return Response({"error": "Brak uprawnień"}, status=status.HTTP_403_FORBIDDEN)
+        UserService().delete_user(user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
+class UserProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            UserService().update_user(request.user, **serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

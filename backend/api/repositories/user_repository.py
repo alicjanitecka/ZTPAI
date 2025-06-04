@@ -6,7 +6,7 @@ class UserRepository:
 
     def create(self, username, email, password):
         return CustomUser.objects.create(username=username, email=email, password=password)
-    
+
     def get_all(self):
         return CustomUser.objects.all()
 
@@ -15,3 +15,12 @@ class UserRepository:
 
     def email_exists(self, email):
         return CustomUser.objects.filter(email=email).exists()
+
+    def delete(self, user):
+        user.delete()
+
+    def update(self, user, **kwargs):
+        for key, value in kwargs.items():
+            setattr(user, key, value)
+        user.save()
+        return user

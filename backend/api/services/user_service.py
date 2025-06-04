@@ -16,3 +16,10 @@ class UserService:
             raise ValueError("Email already exists")
         user = self.repo.create(username, email, make_password(password))
         return user
+
+    def delete_user(self, user):
+        self.repo.delete(user)
+
+    def update_user(self, user, **kwargs):
+        # Możesz dodać walidacje, np. nie pozwól zmienić email na już istniejący
+        return self.repo.update(user, **kwargs)

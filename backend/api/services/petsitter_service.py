@@ -8,6 +8,8 @@ class PetsitterService:
         return self.repo.get_by_user(user)
 
     def create_petsitter(self, user, **kwargs):
+        if self.repo.get_by_user(user):
+            raise ValueError("User is already a petsitter")
         return self.repo.create(user, **kwargs)
 
     def update_petsitter(self, petsitter, **kwargs):

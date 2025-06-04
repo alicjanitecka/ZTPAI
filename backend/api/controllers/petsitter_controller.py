@@ -36,3 +36,19 @@ class PetsitterSearchView(APIView):
         petsitters = PetsitterService().search_petsitters(city, pet_type, care_type, date)
         serializer = PetsitterSerializer(petsitters, many=True)
         return Response(serializer.data)
+    
+class PetsitterCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = PetsitterSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                petsitter = PetsitterService().create_petsitter(
+                    user=request.user,
+                    **serializer.validated_data
+                )
+                return Response(PetsitterSerializer(petsitter).data, status=status.HTTP_201_CREATED)
+            except ValueError as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
