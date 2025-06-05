@@ -6,6 +6,9 @@ from rest_framework import status, permissions
 from api.serializers import VisitSerializer
 from api.services.visit_service import VisitService
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import generics
+
 
 class VisitCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -29,9 +32,9 @@ class VisitCreateView(APIView):
             return Response(VisitSerializer(visit).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class VisitListView(APIView):
+class VisitListView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
-
+    serializer_class = VisitSerializer
     @swagger_auto_schema(
         operation_description="Get a list of visits for the authenticated user.",
         responses={
@@ -41,10 +44,8 @@ class VisitListView(APIView):
             500: "Internal Server Error",
         }
     )
-    def get(self, request):
-        visits = VisitService().list_visits_for_user(request.user)
-        serializer = VisitSerializer(visits, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return VisitService().list_visits_for_user(self.request.user)
 
 class VisitUpdateView(APIView):
     permission_classes = [permissions.IsAuthenticated]

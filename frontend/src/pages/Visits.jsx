@@ -79,8 +79,8 @@ function Visits() {
       <div className="search-results">
         {loading && <p>Loading...</p>}
         {!loading && visits.length === 0 && <p>No visits.</p>}
-        {visits.map(v => (
-          <div key={v.id} className="petsitter-result">
+        {Array.isArray(visits?.results) && visits.results.map(v => (
+  <div key={v.id} className="petsitter-result">
             <div className="petsitter-avatar">
               <img src={defaultAvatar} alt="avatar" />
             </div>
