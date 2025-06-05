@@ -66,7 +66,7 @@ function Dashboard() {
       pets: [],
     };
     await axios.post(
-      "http://localhost:8000/api/visits/",
+      "http://localhost:8000/api/v1/visits/",
       payload,
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -95,7 +95,7 @@ const handleCancelBooking = () => {
             if (careType) params.care_type = careType;
             if (startDate) params.start_date = startDate;
             if (endDate) params.end_date = endDate;
-            const res = await axios.get("http://localhost:8000/api/petsitters/search/", { params });
+            const res = await axios.get("http://localhost:8000/api/v1/petsitters/search/", { params });
             console.log("API response:", res.data);
             setResults(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
@@ -119,7 +119,7 @@ const handleCancelBooking = () => {
       const token = localStorage.getItem(ACCESS_TOKEN);
       if (!token) return;
       try {
-        const res = await api.get("/api/profile/", {
+        const res = await api.get("/api/v1/profile/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setIsPetsitter(res.data.is_petsitter || false);

@@ -14,7 +14,7 @@ function Visits() {
   const [loading, setLoading] = useState(true);
   const [isPetsitter, setIsPetsitter] = useState(false);
 
-  const fetchVisits = async (url = "http://localhost:8000/api/my-visits/") => {
+  const fetchVisits = async (url = "http://localhost:8000/api/v1/my-visits/") => {
     setLoading(true);
     try {
       const token = localStorage.getItem(ACCESS_TOKEN);
@@ -37,7 +37,7 @@ function Visits() {
       const token = localStorage.getItem(ACCESS_TOKEN);
       if (!token) return;
       try {
-        const res = await api.get("/api/profile/", {
+        const res = await api.get("/api/v1/profile/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setIsPetsitter(res.data.is_petsitter || false);
@@ -50,7 +50,7 @@ function Visits() {
   const updateVisit = async (id, data) => {
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
-      await axios.patch(`http://localhost:8000/api/visits/${id}/`, data, {
+      await axios.patch(`http://localhost:8000/api/v1/visits/${id}/`, data, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchVisits(); 

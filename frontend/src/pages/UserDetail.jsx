@@ -9,7 +9,7 @@ function UserDetail() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await api.get(`/api/users/${id}/`);
+                const response = await api.get(`/api/v1/users/${id}/`);
                 setUser(response.data);
             } catch (error) {
                 console.error(error);

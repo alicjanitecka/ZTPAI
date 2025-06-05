@@ -23,7 +23,7 @@ function AdminPage() {
     const fetchUsers = async () => {
 
         try {
-            const response = await api.get('/api/home/');
+            const response = await api.get('/api/v1/home/');
             setUsers(response.data);
             setErrorMsg(''); 
         } catch (error) {
@@ -48,7 +48,7 @@ function AdminPage() {
         setCreating(true);
         setErrorMsg(''); 
         try {
-            await api.post('/api/user/register/', { 
+            await api.post('/api/v1/user/register/', { 
                 username: newUsername, 
                 email: newEmail,
                 password: newPassword 
@@ -86,7 +86,7 @@ function AdminPage() {
     const handleDelete = async (userId) => {
         if (!window.confirm("Na pewno chcesz usunąć użytkownika?")) return;
         try {
-            await api.delete(`/api/user/${userId}/delete/`);
+            await api.delete(`/api/v1/user/${userId}/delete/`);
             await fetchUsers();
         } catch (error) {
             alert("Błąd podczas usuwania użytkownika.");

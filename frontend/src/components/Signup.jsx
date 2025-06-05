@@ -18,7 +18,7 @@ function Signup() {
             return;
         }
         try {
-            await api.post("api/user/register/", {
+            await api.post("api/v1/user/register/", {
                 username,
                 email,
                 password,

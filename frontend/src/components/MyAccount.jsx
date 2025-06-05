@@ -58,25 +58,25 @@ const [availabilityList, setAvailabilityList] = useState([]);
       setLoading(true);
       const token = localStorage.getItem(ACCESS_TOKEN);
       try {
-        const res = await axios.get("http://localhost:8000/api/profile/", {
+        const res = await axios.get("http://localhost:8000/api/v1/profile/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setForm(res.data);
         if (res.data.photo) setAvatarPreview(res.data.photo);
         setIsPetsitter(res.data.is_petsitter || false);
 
-        const petsRes = await axios.get("http://localhost:8000/api/pets/", {
+        const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPets(petsRes.data);
 
         if (res.data.is_petsitter) {
-        const petsitterRes = await axios.get("http://localhost:8000/api/petsitters/me/", {
+        const petsitterRes = await axios.get("http://localhost:8000/api/v1/petsitters/me/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setServices(petsitterRes.data);
 
-        const availRes = await axios.get("http://localhost:8000/api/petsitter-availability/", {
+        const availRes = await axios.get("http://localhost:8000/api/v1/petsitter-availability/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAvailabilityList(availRes.data);
@@ -104,10 +104,10 @@ const [availabilityList, setAvailabilityList] = useState([]);
     e.preventDefault();
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
-      await axios.post("http://localhost:8000/api/pets/", petForm, {
+      await axios.post("http://localhost:8000/api/v1/pets/", petForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const petsRes = await axios.get("http://localhost:8000/api/pets/", {
+      const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPets(petsRes.data);
@@ -126,7 +126,7 @@ const [availabilityList, setAvailabilityList] = useState([]);
 const handleDeleteAvailability = async (id) => {
   const token = localStorage.getItem(ACCESS_TOKEN);
   try {
-    await axios.delete(`http://localhost:8000/api/petsitter-availability/${id}/`, {
+    await axios.delete(`http://localhost:8000/api/v1/petsitter-availability/${id}/`, {
       headers: { Authorization: `Bearer ${token}` }
     });
 
@@ -148,7 +148,7 @@ const handleDeleteAvailability = async (id) => {
     e.preventDefault();
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
-      await axios.patch("http://localhost:8000/api/petsitters/me/", services, {
+      await axios.patch("http://localhost:8000/api/v1/petsitters/me/", services, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("Usługi zaktualizowane!");
@@ -160,7 +160,7 @@ const handleUserDataSubmit = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem(ACCESS_TOKEN);
   try {
-    await axios.patch("http://localhost:8000/api/profile/", form, {
+    await axios.patch("http://localhost:8000/api/v1/profile/", form, {
       headers: { Authorization: `Bearer ${token}` }
     });
     alert("Dane zapisane!");
@@ -230,12 +230,12 @@ const handleEditPet = (pet) => {
       const token = localStorage.getItem(ACCESS_TOKEN);
       try {
         await axios.patch(
-          `http://localhost:8000/api/pets/${editingPet.id}/`,
+          `http://localhost:8000/api/v1/pets/${editingPet.id}/`,
           editingPet,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         // odśwież listę zwierząt
-        const petsRes = await axios.get("http://localhost:8000/api/pets/", {
+        const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPets(petsRes.data);
@@ -338,14 +338,14 @@ const handleEditPet = (pet) => {
       }
       const token = localStorage.getItem(ACCESS_TOKEN);
       try {
-        await axios.post("http://localhost:8000/api/petsitter-availability/", {
+        await axios.post("http://localhost:8000/api/v1/petsitter-availability/", {
           date: availabilityDate,
           is_available: true
         }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         alert("Dostępność zapisana!");
-        const availRes = await axios.get("http://localhost:8000/api/petsitter-availability/", {
+        const availRes = await axios.get("http://localhost:8000/api/v1/petsitter-availability/", {
           headers: { Authorization: `Bearer ${token}` }
         });
       } catch (err) {

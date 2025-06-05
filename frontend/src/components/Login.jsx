@@ -13,7 +13,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await api.post("/api/token/", {
+            const res = await api.post("/api/v1/token/", {
                 username,
                 password,
             });

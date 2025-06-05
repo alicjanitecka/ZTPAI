@@ -29,28 +29,31 @@ schema_view = get_schema_view(
 )
 
 
+
+
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path("api/user/register/", CreateUserView.as_view(), name="register"),
-    path("api/admin-panel/", UserListView.as_view(), name="admin-panel"),
-    path("api/user/<int:pk>/delete/", UserDeleteView.as_view(), name="delete_user"),
-    path("api/users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
-    path("api/token/", TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer), name="get_token"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
-    path("api-auth/", include("rest_framework.urls")),
-    path("api/petsitters/search/", PetsitterSearchView.as_view(), name="petsitter_search"),
-    path('api/visits/', VisitCreateView.as_view(), name='visit_create'),
-    path('api/my-visits/', VisitListView.as_view(), name='my-visits'),
-    path('api/visits/<int:pk>/', VisitUpdateView.as_view(), name='visit-update'),
-    path('api/petsitters/', PetsitterCreateView.as_view(), name='petsitter-create'),
-    path('api/profile/', UserProfileView.as_view(), name='user-profile'),
-    path('api/pets/', PetListCreateView.as_view(), name='pet-list-create'),
-    path('api/pets/<int:pk>/', PetUpdateDeleteView.as_view(), name='pet-update-delete'),
-    path('api/petsitters/me/', PetsitterMeView.as_view(), name='petsitter-me'),
-    path('api/petsitter-availability/', PetsitterAvailabilityListCreateView.as_view(), name='petsitter-availability-list-create'),
-    path('api/petsitter-availability/<int:pk>/', PetsitterAvailabilityUpdateDeleteView.as_view(), name='petsitter-availability-update-delete'),
+path('admin/v1/', admin.site.urls),
+path('api/v1/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+path('api/v1/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+path("api/v1/user/register/", CreateUserView.as_view(), name="register"),
+path("api/v1/admin-panel/", UserListView.as_view(), name="admin-panel"),
+path("api/v1/user/<int:pk>/delete/", UserDeleteView.as_view(), name="delete_user"),
+path("api/v1/users/<int:pk>/", UserDetailView.as_view(), name="user_detail"),
+path("api/v1/token/", TokenObtainPairView.as_view(serializer_class=CustomTokenObtainPairSerializer), name="get_token"),
+path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
+path("api-auth/v1/", include("rest_framework.urls")),
+path("api/v1/petsitters/search/", PetsitterSearchView.as_view(), name="petsitter_search"),
+path('api/v1/visits/', VisitCreateView.as_view(), name='visit_create'),
+path('api/v1/my-visits/', VisitListView.as_view(), name='my-visits'),
+path('api/v1/visits/<int:pk>/', VisitUpdateView.as_view(), name='visit-update'),
+path('api/v1/petsitters/', PetsitterCreateView.as_view(), name='petsitter-create'),
+path('api/v1/profile/', UserProfileView.as_view(), name='user-profile'),
+path('api/v1/pets/', PetListCreateView.as_view(), name='pet-list-create'),
+path('api/v1/pets/<int:pk>/', PetUpdateDeleteView.as_view(), name='pet-update-delete'),
+path('api/v1/petsitters/me/', PetsitterMeView.as_view(), name='petsitter-me'),
+path('api/v1/petsitter-availability/', PetsitterAvailabilityListCreateView.as_view(), name='petsitter-availability-list-create'),
+path('api/v1/petsitter-availability/<int:pk>/', PetsitterAvailabilityUpdateDeleteView.as_view(), name='petsitter-availability-update-delete'),
 ]
 
 if settings.DEBUG:

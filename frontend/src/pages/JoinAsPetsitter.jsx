@@ -22,7 +22,7 @@ function JoinAsPetsitter() {
     try {
       const token = localStorage.getItem(ACCESS_TOKEN);
       await api.post(
-        "/api/petsitters/",
+        "/api/v1/petsitters/",
         {
           description,
           is_dog_sitter: isDogSitter,
