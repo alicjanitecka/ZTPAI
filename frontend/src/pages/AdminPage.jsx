@@ -23,7 +23,7 @@ function AdminPage() {
     const fetchUsers = async () => {
 
         try {
-            const response = await api.get('/api/v1/home/');
+            const response = await api.get('/api/v1/admin-panel/');
             setUsers(response.data);
             setErrorMsg(''); 
         } catch (error) {

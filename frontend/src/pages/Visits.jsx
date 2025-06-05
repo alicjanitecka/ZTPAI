@@ -13,6 +13,7 @@ function Visits() {
   const [visits, setVisits] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
   const [isPetsitter, setIsPetsitter] = useState(false);
+  const [nextPageData, setNextPageData] = useState(null);
 
   const fetchVisits = async (url = "http://localhost:8000/api/v1/my-visits/") => {
     setLoading(true);
@@ -22,9 +23,16 @@ function Visits() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVisits(res.data);
-    } catch (err) {
-      alert("Błąd podczas pobierania wizyt");
+          if (res.data.next) {
+      axios.get(res.data.next, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(nextRes => setNextPageData(nextRes.data));
+    } else {
+      setNextPageData(null);
     }
+  } catch (err) {
+    alert("Błąd podczas pobierania wizyt");
+  }
     setLoading(false);
   };
 
