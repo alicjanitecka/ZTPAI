@@ -45,15 +45,30 @@ Key features:
 
 ## Technologies
 
-- **Django + Django REST Framework** – Secure, scalable, and fast backend API development.
-- **PostgreSQL** – Robust relational database, perfect for complex queries and reliability.
-- **React.js** – Modern, component-based frontend for interactive UIs.
-- **JWT** – Secure, stateless authentication.
-- **Docker & Docker Compose** – Unified, reproducible dev and deployment environments.
-- **PgAdmin** – Easy database management via web UI.
 
-**Why these?**  
-These technologies are popular, well-documented, and proven in production for scalable web applications.
+- **Backend**
+  
+Django & Django REST Framework – Secure, scalable, and efficient backend framework for building robust RESTful APIs. DRF provides built-in support for authentication, permissions, and serialization, speeding up API development and ensuring best practices.
+
+- **Database**
+  
+PostgreSQL – A powerful, open-source relational database system, well-suited for complex queries, data integrity, and high reliability in production environments.
+
+- **Frontend**
+  
+React.js (18+) – Modern, component-based JavaScript library for building interactive and responsive user interfaces. React enables rapid UI development and efficient updates.
+
+- **Authentication**
+  
+JWT (JSON Web Tokens) – Enables secure, stateless authentication and authorization for both frontend and backend, ensuring user sessions are protected and scalable.
+
+- **Containerization & DevOps**
+  
+Docker & Docker Compose – Provide consistent, reproducible development and deployment environments. Docker simplifies dependency management and scaling, while Docker Compose orchestrates multi-container setups for local and production use.
+
+- **Database Management**
+  
+PgAdmin – A user-friendly web interface for managing PostgreSQL databases, making database administration and inspection straightforward for developers.
 
 ---
 
