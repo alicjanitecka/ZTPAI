@@ -7,7 +7,7 @@ class CustomUser(AbstractUser):
         ('admin', 'Admin'),
     )
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, db_index=True)
     phone = models.CharField(max_length=30, blank=True)
     city = models.CharField(max_length=100, blank=True)
     street = models.CharField(max_length=100, blank=True)
@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
 
 
 class Petsitter(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='petsitter_profile')
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='petsitter_profile',  db_index=True)
     description = models.TextField(blank=True)
     is_dog_sitter = models.BooleanField(default=False)
     is_cat_sitter = models.BooleanField(default=False)
@@ -33,9 +33,16 @@ class Petsitter(models.Model):
     dog_walking = models.BooleanField(default=False)
     class Meta:
         db_table = 'petsitter'
+        # indexes = [
+        #     models.Index(fields=['user']),
+        #     models.Index(fields=['petsitter']),
+        #     models.Index(fields=['care_type']),
+        #     models.Index(fields=['start_date']),
+        #     models.Index(fields=['end_date']),
+        # ]
 
 class PetsitterAvailability(models.Model):
-    petsitter = models.ForeignKey(Petsitter, on_delete=models.CASCADE, related_name='availabilities')
+    petsitter = models.ForeignKey(Petsitter, on_delete=models.CASCADE, related_name='availabilities',  db_index=True)
     date = models.DateField()
     is_available = models.BooleanField(default=True)   
     class Meta:
@@ -44,7 +51,7 @@ class PetsitterAvailability(models.Model):
 class Visit(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
     petsitter = models.ForeignKey('Petsitter', on_delete=models.CASCADE)
-    care_type = models.CharField(max_length=50)
+    care_type = models.CharField(max_length=50,  db_index=True)
     start_date = models.DateField()
     end_date = models.DateField()
     confirmed = models.BooleanField(default=False)
@@ -59,7 +66,7 @@ class Visit(models.Model):
     
 class Pet(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100,  db_index=True)
     age = models.PositiveIntegerField()
     breed = models.CharField(max_length=100, blank=True)
     additional_info = models.TextField(blank=True)
