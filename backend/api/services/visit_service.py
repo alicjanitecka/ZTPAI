@@ -16,7 +16,6 @@ class VisitService:
         return self.repo.get_by_id(pk)
 
     def update_visit(self, visit, user, **kwargs):
-        # Pozwól tylko właścicielowi lub petsitterowi na zmianę
         if visit.user != user and visit.petsitter.user != user:
             raise PermissionError("Nie masz uprawnień do modyfikacji tej wizyty.")
         return self.repo.update(visit, **kwargs)

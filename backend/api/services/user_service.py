@@ -21,5 +21,4 @@ class UserService:
         self.repo.delete(user)
 
     def update_user(self, user, **kwargs):
-        # Możesz dodać walidacje, np. nie pozwól zmienić email na już istniejący
         return self.repo.update(user, **kwargs)

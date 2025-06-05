@@ -4,9 +4,6 @@ from rest_framework import status
 from api.models import CustomUser, Pet, Petsitter, PetsitterAvailability, Visit
 from datetime import date, timedelta
 
-
-# --- USER ENDPOINTS ---
-
 @pytest.mark.django_db
 def test_create_user(client):
     url = reverse("register")
@@ -50,17 +47,13 @@ def test_user_delete(api_client, custom_user_factory):
 def test_user_profile_get_patch(api_client, custom_user_factory):
     user = custom_user_factory.create()
     api_client.force_authenticate(user=user)
-    # GET
     response = api_client.get(reverse("user-profile"))
     assert response.status_code == 200
-    # PATCH
     patch_data = {"first_name": "Alicja"}
     response = api_client.patch(reverse("user-profile"), patch_data)
     assert response.status_code == 200
     user.refresh_from_db()
     assert user.first_name == "Alicja"
-
-# --- PET ENDPOINTS ---
 
 @pytest.mark.django_db
 def test_pet_list_create(api_client, custom_user_factory):
@@ -75,17 +68,14 @@ def test_pet_list_create(api_client, custom_user_factory):
     assert response.status_code == 201
     assert Pet.objects.filter(name="Burek", user=user).exists()
 
-# --- PETSITTER ENDPOINTS ---
 
 @pytest.mark.django_db
 def test_petsitter_me_patch(api_client, custom_user_factory, petsitter_factory):
     user = custom_user_factory.create()
     petsitter = petsitter_factory.create(user=user)
     api_client.force_authenticate(user=user)
-    # GET
     response = api_client.get(reverse("petsitter-me"))
     assert response.status_code == 200
-    # PATCH
     response = api_client.patch(reverse("petsitter-me"), {"description": "Nowy opis"})
     assert response.status_code == 200
     petsitter.refresh_from_db()
@@ -117,8 +107,6 @@ def test_petsitter_create(api_client, custom_user_factory):
     assert response.status_code == 201
     assert Petsitter.objects.filter(user=user).exists()
 
-# --- PETSITTER AVAILABILITY ENDPOINTS ---
-
 @pytest.mark.django_db
 def test_petsitter_availability_delete(api_client, custom_user_factory, petsitter_factory, petsitter_availability_factory):
     user = custom_user_factory.create()
@@ -129,7 +117,6 @@ def test_petsitter_availability_delete(api_client, custom_user_factory, petsitte
     assert response.status_code == 204
     assert not PetsitterAvailability.objects.filter(id=availability.id).exists()
 
-# # --- VISIT ENDPOINTS ---
 
 @pytest.mark.django_db
 def test_visit_create_list(api_client, custom_user_factory, pet_factory, petsitter_factory):
@@ -137,7 +124,6 @@ def test_visit_create_list(api_client, custom_user_factory, pet_factory, petsitt
     petsitter = petsitter_factory.create()
     pet = pet_factory.create(user=user)
     api_client.force_authenticate(user=user)
-    # Create
     payload = {
         "pets": [pet.id],
         "petsitter": petsitter.id,
@@ -147,7 +133,6 @@ def test_visit_create_list(api_client, custom_user_factory, pet_factory, petsitt
     }
     response = api_client.post(reverse("visit_create"), payload)
     assert response.status_code == 201
-    # List
     response = api_client.get(reverse("my-visits"))
     assert response.status_code == 200
 
@@ -160,8 +145,6 @@ def test_visit_patch(api_client, custom_user_factory, visit_factory):
     assert response.status_code == 200
     visit.refresh_from_db()
     assert visit.care_type == "dog_walking"
-
-# --- COVERAGE DOCUMENTATION ---
 
 def test_documentation():
     """

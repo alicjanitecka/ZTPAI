@@ -1,4 +1,3 @@
-# filepath: c:/Users/alicj/Desktop/PetZone/backend/api/tests/integration/test_endpoints.py
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from django.urls import reverse

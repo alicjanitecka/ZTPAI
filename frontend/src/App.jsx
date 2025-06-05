@@ -12,10 +12,6 @@ import JoinAsPetsitter from "./pages/JoinAsPetsitter";
 import MyAccount from "./components/MyAccount";
 import AdminPage from "./pages/AdminPage"
 
-// function Logout() {
-//   localStorage.clear()
-//   return <Navigate to="/login" />
-// }
 
 function RegisterAndLogout() {
   localStorage.clear()
@@ -36,21 +32,17 @@ function App() {
         <Route path="/account" element={<MyAccount />} />
         <Route path="/admin-users" element={<AdminPage />} />
         <Route path="*" element={<NotFound />}></Route>
-        <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
+        <Route path="/" element={ 
+          <ProtectedRoute>
+           <Dashboard />
+          </ProtectedRoute>
+          }
         />
-        <Route
-                    path="/users/:id"
-                    element={
-                        <ProtectedRoute>
-                            <UserDetail />
-                        </ProtectedRoute>
-                    }
+        <Route path="/users/:id" element={
+          <ProtectedRoute>
+            <UserDetail />
+          </ProtectedRoute>
+        }
         />
       </Routes>
     </BrowserRouter>

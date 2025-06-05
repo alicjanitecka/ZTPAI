@@ -234,7 +234,6 @@ const handleEditPet = (pet) => {
           editingPet,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        // odśwież listę zwierząt
         const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
           headers: { Authorization: `Bearer ${token}` }
         });
