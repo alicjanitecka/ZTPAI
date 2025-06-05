@@ -303,3 +303,147 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+@media (max-width: 600px) {
+    .top-nav {
+        flex-direction: row;
+        align-items:  flex-start;
+        gap: 30px;
+        padding: 10px 10px 40px 50px ;
+    }
+
+    .header {
+        justify-content: center;
+        align-items: center;
+        padding: 10px 0 0 0;
+    }
+
+    .logo {
+        width: 120px;
+        margin-top: -30px;
+    }
+
+    .filters-background {
+        padding: 10px 0;
+        display: flex;
+    justify-content: center;
+    }
+
+    .filters {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 8vw;
+        max-width: 100vw;
+        border-radius: 10px;
+        background-color: #eae5df;
+        box-sizing: border-box;
+        align-items: center;
+    }
+
+    .filters input,
+    .filters select {
+        width: 70vw;
+        max-width: 320px;
+        font-size: 1rem;
+        padding: 11px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    display: block; 
+    }
+
+    .search-button {
+        width: 70vw;
+        max-width: 320px;
+        padding: 11px 0;
+        font-size: 1rem;
+        border-radius: 10px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .services {
+        flex-direction: column;
+        gap: 18px;
+        max-width: 98vw;
+        margin: 20px auto;
+        align-items: center;
+    }
+
+    .card {
+        display: none;
+    }
+
+
+    .search-results {
+        max-width: 98vw;
+        margin: 18px auto 0 auto;
+        gap: 14px;
+        padding: 0 4vw;
+    }
+
+    .petsitter-result {
+        flex-direction: column;
+        align-items: center;
+        padding: 16px 7vw;
+        min-height: 0;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 350px;
+        box-sizing: border-box;
+    }
+
+    .petsitter-avatar {
+        width: 65px;
+        height: 65px;
+        margin: 0 0 14px 0;
+    }
+
+    .petsitter-avatar img {
+        width: 46px;
+        height: 46px;
+    }
+
+    .petsitter-info {
+        gap: 4px;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .petsitter-action {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .book-btn,
+    .cancel-btn,
+    .confirm-btn {
+        width: 90vw;
+        max-width: 220px;
+        padding: 10px 0;
+        font-size: 1rem;
+        border-radius: 10px;
+        margin: 6px auto;
+        display: block;
+    }
+
+    .pagination {
+        gap: 10px;
+        margin: 20px 0 8px 0;
+    }
+
+    .pagination button {
+        font-size: 0.95rem;
+        padding: 9px 18px;
+        border-radius: 8px;
+    }
+
+    /* Modal */
+    .modal {
+        padding: 18px 6vw;
+        min-width: 0;
+        max-width: 96vw;
+    }
+}
