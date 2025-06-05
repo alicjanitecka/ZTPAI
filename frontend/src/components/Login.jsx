@@ -63,6 +63,9 @@ useEffect(() => {
                 </div>
             )}
         <div className="login-wrapper">
+                        <div className="login-right">
+                <img src={logo} alt="PetZone Logo" className="login-logo" />
+            </div>
             <div className="login-left">
                 <h2 className="login-title">WELCOME BACK!</h2>
                 <form onSubmit={handleSubmit} className="login-form">
@@ -98,9 +101,7 @@ useEffect(() => {
                     <a href="/register"> Sign up</a>
                 </p>
             </div>
-            <div className="login-right">
-                <img src={logo} alt="PetZone Logo" className="login-logo" />
-            </div>
+
         </div>
         </div>
     );

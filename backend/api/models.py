@@ -33,13 +33,6 @@ class Petsitter(models.Model):
     dog_walking = models.BooleanField(default=False)
     class Meta:
         db_table = 'petsitter'
-        # indexes = [
-        #     models.Index(fields=['user']),
-        #     models.Index(fields=['petsitter']),
-        #     models.Index(fields=['care_type']),
-        #     models.Index(fields=['start_date']),
-        #     models.Index(fields=['end_date']),
-        # ]
 
 class PetsitterAvailability(models.Model):
     petsitter = models.ForeignKey(Petsitter, on_delete=models.CASCADE, related_name='availabilities',  db_index=True)
