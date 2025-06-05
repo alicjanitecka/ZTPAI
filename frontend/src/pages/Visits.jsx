@@ -10,15 +10,15 @@ import api from "../api";
 <Link to="/logout">LOGOUT</Link>
 
 function Visits() {
-  const [visits, setVisits] = useState([]);
+  const [visits, setVisits] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
   const [isPetsitter, setIsPetsitter] = useState(false);
 
-  const fetchVisits = async () => {
+  const fetchVisits = async (url = "http://localhost:8000/api/my-visits/") => {
     setLoading(true);
     try {
       const token = localStorage.getItem(ACCESS_TOKEN);
-      const res = await axios.get("http://localhost:8000/api/my-visits/", {
+      const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVisits(res.data);
@@ -128,6 +128,15 @@ function Visits() {
             </div>
           </div>
         ))}
+        <div className="pagination">
+  {visits.previous && (
+    <button onClick={() => fetchVisits(visits.previous)}>Poprzednia</button>
+  )}
+  {visits.next && (
+    <button onClick={() => fetchVisits(visits.next)}>Następna</button>
+  )}
+</div>
+
       </div>
     </div>
   );
