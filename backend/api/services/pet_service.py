@@ -11,6 +11,9 @@ class PetService:
         return self.repo.create(user, **kwargs)
     def get_pet(self, pet_id):
         return self.repo.get_by_id(pet_id)
+
+    def get_pet_for_user(self, pet_id, user):
+        return self.repo.get_for_user(pet_id, user)
     def update_pet(self, pet, **kwargs):
         return self.repo.update(pet, **kwargs)
     def delete_pet(self, pet):

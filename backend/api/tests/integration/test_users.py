@@ -59,10 +59,8 @@ def test_user_profile_get_patch(api_client, custom_user_factory):
 def test_pet_list_create(api_client, custom_user_factory):
     user = custom_user_factory.create()
     api_client.force_authenticate(user=user)
-    # List
     response = api_client.get(reverse("pet-list-create"))
     assert response.status_code == 200
-    # Create
     payload = {"name": "Burek", "pet_type": "dog", "age": 3}
     response = api_client.post(reverse("pet-list-create"), payload)
     assert response.status_code == 201

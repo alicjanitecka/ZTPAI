@@ -12,6 +12,7 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError("");
         try {
             const res = await api.post("/api/v1/token/", {
                 username,
@@ -21,11 +22,13 @@ function Login() {
             localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
             navigate("/");
         } catch (err) {
-            alert("Login failed. Please check your credentials.");
+            setError("Login failed. Please check your credentials and try again.");
         }
     };
 
 const [showExpired, setShowExpired] = useState(false);
+const [error, setError] = useState("");
+
 useEffect(() => {
     const url = new URL(window.location);
     const expired = url.searchParams.get("expired") === "1";
@@ -42,18 +45,57 @@ useEffect(() => {
     return (
         <div>
       {showExpired && (
-        <div style={{ color: "red", marginBottom: "1rem" }}>
+        <div style={{
+            background: "#fef3cd",
+            color: "#856404",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            marginBottom: "1rem",
+            border: "1px solid #ffeaa7",
+            position: "relative",
+            textAlign: "center"
+        }}>
           Your session has expired. Please log in again.
         <button
                         onClick={() => setShowExpired(false)}
                         style={{
                             position: "absolute",
                             right: 10,
-                            top: 0,
+                            top: 8,
                             background: "transparent",
                             border: "none",
-                            fontSize: "1.2rem",
-                            color: "#5c5c5c",
+                            fontSize: "1.4rem",
+                            color: "#856404",
+                            cursor: "pointer"
+                        }}
+                        aria-label="Close"
+                    >
+                        ×
+                    </button>
+                </div>
+            )}
+      {error && (
+        <div style={{
+            background: "#f8d7da",
+            color: "#721c24",
+            padding: "12px 16px",
+            borderRadius: "8px",
+            marginBottom: "1rem",
+            border: "1px solid #f5c6cb",
+            position: "relative",
+            textAlign: "center"
+        }}>
+          {error}
+        <button
+                        onClick={() => setError("")}
+                        style={{
+                            position: "absolute",
+                            right: 10,
+                            top: 8,
+                            background: "transparent",
+                            border: "none",
+                            fontSize: "1.4rem",
+                            color: "#721c24",
                             cursor: "pointer"
                         }}
                         aria-label="Close"

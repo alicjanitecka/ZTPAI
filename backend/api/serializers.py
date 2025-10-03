@@ -37,7 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_is_petsitter(self, obj):
         return Petsitter.objects.filter(user=obj).exists()
     class Meta:
-        model = CustomUser  #
+        model = CustomUser 
         fields = [
             'id',
             'email',

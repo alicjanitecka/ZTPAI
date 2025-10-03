@@ -25,10 +25,27 @@ body {
     color: #5c5c5c;
     font-weight: 700;
     font-size: 1rem;
+    transition: color 0.3s ease;
+    position: relative;
 }
 
 .top-nav a:hover {
-    text-decoration: underline;
+    color: #b7ab9e;
+}
+
+.top-nav a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: #b7ab9e;
+    transition: width 0.3s ease;
+}
+
+.top-nav a:hover:after {
+    width: 100%;
 }
 
 /* LOGO SECTION */
@@ -67,12 +84,20 @@ body {
 .filters input,
 .filters select {
     padding: 10px;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 8px;
     background-color: #fff;
     font-family: 'Jura', sans-serif;
     font-size: 0.95rem;
     width: 180px;
+    transition: all 0.3s ease;
+}
+
+.filters input:focus,
+.filters select:focus {
+    outline: none;
+    border-color: #b7ab9e;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
 }
 
 .search-button {
@@ -82,6 +107,22 @@ body {
     border-radius: 8px;
     color: white;
     cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #a08c6b;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(183, 171, 158, 0.3);
+}
+
+.search-button:active {
+    transform: translateY(0);
+}
+
+.search-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.3);
 }
 
 /* SERVICES SECTION */
@@ -99,9 +140,15 @@ body {
     padding: 20px;
     border-radius: 16px;
     width: 300px;
-    height: 300px;;
+    height: 300px;
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 .card h3 {
@@ -144,6 +191,12 @@ body {
     min-height: 120px;
     position: relative;
     background-color: #eae5df;
+    transition: all 0.3s ease;
+}
+
+.petsitter-result:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
 }
 
 .petsitter-avatar {
@@ -219,11 +272,22 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
 }
 
 .book-btn:hover {
     background: #a08c6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+.book-btn:active {
+    transform: translateY(0);
+}
+
+.book-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.3);
 }
 
 .plus-icon {
@@ -263,7 +327,15 @@ body {
   padding: 10px 24px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.confirm-btn:hover {
+  background: #a08c6b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
 .cancel-btn {
   background: #eae5df;
   color: #5c5c5c;
@@ -272,6 +344,13 @@ body {
   padding: 10px 24px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background: #d6cdc2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 229, 223, 0.4);
 }
 .pagination {
   display: flex;
@@ -303,6 +382,17 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 600px) {
     .top-nav {
         flex-direction: row;

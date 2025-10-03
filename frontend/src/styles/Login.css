@@ -41,10 +41,18 @@ body {
 .login-form input {
     padding: 12px;
     margin-bottom: 12px;
-    border: 1px solid #ccc;
+    border: 2px solid transparent;
     border-radius: 8px;
     background-color: #f8f6f4;
     font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #b7ab9e;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
 }
 
 .login-options {
@@ -80,6 +88,17 @@ body {
     font-size: 1rem;
     cursor: pointer;
     letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover:not(:disabled) {
+    background-color: #a08c6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+.login-button:active:not(:disabled) {
+    transform: translateY(0);
 }
 
 .login-button:disabled {

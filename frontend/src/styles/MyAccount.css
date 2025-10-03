@@ -34,12 +34,20 @@
     font-size: 1.07rem;
     cursor: pointer;
     text-align: center;
-    transition: background 0.2s, color 0.2s;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.account-tab:hover:not(.active) {
+    background: #f8f6f4;
+    transform: translateX(4px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .account-tab.active {
     background: #b7ab9e;
     color: #fff;
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
 }
 
 .account-form {
@@ -52,12 +60,45 @@
 .account-form input,
 .account-form textarea {
     padding: 12px;
-    border: 1px solid #ccc;
+    border: 2px solid transparent;
     border-radius: 8px;
     background-color: #f8f6f4;
     font-size: 1rem;
     font-family: 'Jura', sans-serif;
     margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.account-form input:focus,
+.account-form textarea:focus {
+    outline: none;
+    border-color: #b7ab9e;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
+}
+
+/* Custom checkbox styling */
+.account-form label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #5b5856;
+    padding: 8px 0;
+    transition: color 0.3s ease;
+}
+
+.account-form label:hover {
+    color: #b7ab9e;
+}
+
+.account-form input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #b7ab9e;
+    border-radius: 4px;
 }
 
 .account-avatar-section {
@@ -105,11 +146,130 @@
     letter-spacing: 1px;
     margin-top: 24px;
     font-weight: 600;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
 }
 
 .account-save-btn:hover {
     background-color: #a08c6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+.account-save-btn:active {
+    transform: translateY(0);
+}
+
+.account-save-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.3);
+}
+
+/* Pet list styles */
+.pet-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.pet-item {
+    background: #fff;
+    padding: 16px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+.pet-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.pet-info {
+    flex: 1;
+    color: #5b5856;
+    font-size: 1rem;
+}
+
+.pet-info b {
+    color: #5b5856;
+    font-size: 1.1rem;
+}
+
+.pet-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Pet action buttons */
+.pet-edit-btn, .pet-delete-btn, .pet-cancel-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Jura', sans-serif;
+}
+
+.pet-edit-btn {
+    background: #b7ab9e;
+    color: white;
+}
+
+.pet-edit-btn:hover {
+    background: #a08c6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+.pet-delete-btn {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.pet-delete-btn:hover {
+    background: #f5c6cb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 198, 203, 0.4);
+}
+
+.pet-cancel-btn {
+    background: #eae5df;
+    color: #5c5c5c;
+}
+
+.pet-cancel-btn:hover {
+    background: #d6cdc2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(214, 205, 194, 0.4);
+}
+
+/* Edit pet form */
+.edit-pet-form {
+    margin-top: 24px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.edit-pet-form h4 {
+    color: #5b5856;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.edit-pet-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
 }
 
 @media (max-width: 900px) {

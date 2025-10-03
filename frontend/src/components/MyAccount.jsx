@@ -6,11 +6,13 @@ import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 import "../styles/MyAccount.css";
 import api from "../api";
+import AvailabilityCalendar from "./AvailabilityCalendar";
 
 
 function MyAccount() {
   const [availabilityDate, setAvailabilityDate] = useState("");
 const [availabilityList, setAvailabilityList] = useState([]);
+const [pendingAvailability, setPendingAvailability] = useState([]);
 
   const [form, setForm] = useState({
     first_name: "",
@@ -25,7 +27,7 @@ const [availabilityList, setAvailabilityList] = useState([]);
     photo: null,
   });
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [activeTab, setActiveTab] = useState("dane");
+  const [activeTab, setActiveTab] = useState("personal data");
   const [loading, setLoading] = useState(true);
   const [isPetsitter, setIsPetsitter] = useState(false);
   const [editingPet, setEditingPet] = useState(null);
@@ -91,6 +93,10 @@ const [availabilityList, setAvailabilityList] = useState([]);
   fetchProfile();
 }, []);
 
+useEffect(() => {
+  setPendingAvailability(availabilityList.map(a => a.date));
+}, [availabilityList]);
+
   const tabs = isPetsitter
     ? ["personal data", "my pets", "services"]
     : ["personal data", "my pets"];
@@ -123,6 +129,61 @@ const [availabilityList, setAvailabilityList] = useState([]);
       alert("Błąd przy dodawaniu zwierzęcia");
     }
   };
+const fetchAvailabilityList = async () => {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  try {
+    const availRes = await axios.get("http://localhost:8000/api/v1/petsitter-availability/", {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setAvailabilityList(availRes.data);
+  } catch (err) {
+    console.error("Error fetching availability list");
+  }
+};
+
+const handleToggleAvailability = (dateString) => {
+  setPendingAvailability(prev => {
+    if (prev.includes(dateString)) {
+      return prev.filter(d => d !== dateString);
+    } else {
+      return [...prev, dateString];
+    }
+  });
+};
+
+const handleSaveAvailability = async () => {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+
+  const toAdd = pendingAvailability.filter(
+    date => !availabilityList.some(a => a.date === date)
+  );
+  const toRemove = availabilityList.filter(
+    a => !pendingAvailability.includes(a.date)
+  );
+
+  try {
+    for (const date of toAdd) {
+      await axios.post("http://localhost:8000/api/v1/petsitter-availability/", {
+        date: date,
+        is_available: true
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    }
+
+    for (const a of toRemove) {
+      await axios.delete(`http://localhost:8000/api/v1/petsitter-availability/${a.id}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    }
+
+    await fetchAvailabilityList();
+    alert("Availability saved!");
+  } catch (err) {
+    alert("Error saving availability");
+  }
+};
+
 const handleDeleteAvailability = async (id) => {
   const token = localStorage.getItem(ACCESS_TOKEN);
   try {
@@ -176,7 +237,23 @@ const handleChange = (e) => {
   }));
 };
 const handleEditPet = (pet) => {
-  setEditingPet(pet); 
+  setEditingPet({
+    ...pet,
+    photo_url: pet.photo_url || "",
+    additional_info: pet.additional_info || ""
+  });
+};
+
+const handleDeletePet = async (id) => {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  try {
+    await axios.delete(`http://localhost:8000/api/v1/pets/${id}/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    setPets(pets.filter(pet => pet.id !== id));
+  } catch (err) {
+    alert("Błąd przy usuwaniu zwierzęcia");
+  }
 };
 
   const renderTab = () => {
@@ -211,27 +288,31 @@ const handleEditPet = (pet) => {
         </form>
 
         <h3>My pets</h3>
-<ul>
+<ul className="pet-list">
   {pets.map(pet => (
-    <li key={pet.id}>
-      <b>{pet.name}</b> ({pet.pet_type}, {pet.age} lat) - {pet.breed}
-      <button onClick={() => handleEditPet(pet)}>Edit</button>
-      <button onClick={() => handleDeletePet(pet.id)}>Delete</button>
+    <li key={pet.id} className="pet-item">
+      <div className="pet-info">
+        <b>{pet.name}</b> ({pet.pet_type}, {pet.age} lat) - {pet.breed}
+      </div>
+      <div className="pet-actions">
+        <button className="pet-edit-btn" onClick={() => handleEditPet(pet)}>Edit</button>
+        <button className="pet-delete-btn" onClick={() => handleDeletePet(pet.id)}>Delete</button>
+      </div>
     </li>
   ))}
 </ul>
 
 {editingPet && (
   <form
-    className="account-form"
-    style={{ marginTop: 24, background: "#fff", borderRadius: 12, padding: 16 }}
+    className="account-form edit-pet-form"
     onSubmit={async (e) => {
       e.preventDefault();
       const token = localStorage.getItem(ACCESS_TOKEN);
       try {
+        const { id, user, ...editableFields } = editingPet;
         await axios.patch(
           `http://localhost:8000/api/v1/pets/${editingPet.id}/`,
-          editingPet,
+          editableFields,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
@@ -283,8 +364,10 @@ const handleEditPet = (pet) => {
       value={editingPet.additional_info}
       onChange={e => setEditingPet({ ...editingPet, additional_info: e.target.value })}
     />
-    <button type="submit" className="account-save-btn">Zapisz zmiany</button>
-    <button type="button" onClick={() => setEditingPet(null)} style={{ marginLeft: 12 }}>Anuluj</button>
+    <div className="edit-pet-actions">
+      <button type="submit" className="account-save-btn">Zapisz zmiany</button>
+      <button type="button" className="pet-cancel-btn" onClick={() => setEditingPet(null)}>Anuluj</button>
+    </div>
   </form>
 )}
         </div>
@@ -292,104 +375,58 @@ const handleEditPet = (pet) => {
     }
     if (activeTab === "services" && isPetsitter) {
       return (
-        <form className="account-form" onSubmit={handleServicesSubmit}>
-          <h3>Services and availability</h3>
-          <label>
-            <input type="checkbox" name="is_dog_sitter" checked={services.is_dog_sitter} onChange={handleServicesChange} />
-            Dog care
-          </label>
-          <label>
-            <input type="checkbox" name="is_cat_sitter" checked={services.is_cat_sitter} onChange={handleServicesChange} />
-            Cat care
-          </label>
-          <label>
-            <input type="checkbox" name="is_rodent_sitter" checked={services.is_rodent_sitter} onChange={handleServicesChange} />
-            Rodent care
-          </label>
-          <input type="number" name="hourly_rate" placeholder="Stawka za godzinę" value={services.hourly_rate || ""} onChange={handleServicesChange} />
-          <label>
-            <input type="checkbox" name="care_at_owner_home" checked={services.care_at_owner_home} onChange={handleServicesChange} />
-            Care at owner home
-          </label>
-          <label>
-            <input type="checkbox" name="care_at_petsitter_home" checked={services.care_at_petsitter_home} onChange={handleServicesChange} />
-            Care at petsitter home
-          </label>
-          <label>
-            <input type="checkbox" name="dog_walking" checked={services.dog_walking} onChange={handleServicesChange} />
-            Dog walking
-          </label>
-      <h4>Availability (select available days):</h4>
-<div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-  <input
-    type="date"
-    value={availabilityDate}
-    onChange={e => setAvailabilityDate(e.target.value)}
-    style={{ padding: 8, borderRadius: 6, border: "1px solid #ccc" }}
-  />
-  <button
-    type="button"
-    className="account-save-btn"
-    onClick={async () => {
-      if (!availabilityDate) {
-        alert("Select a date first!");
-        return;
-      }
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      try {
-        await axios.post("http://localhost:8000/api/v1/petsitter-availability/", {
-          date: availabilityDate,
-          is_available: true
-        }, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        alert("Dostępność zapisana!");
-        const availRes = await axios.get("http://localhost:8000/api/v1/petsitter-availability/", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-      } catch (err) {
-        alert("Błąd przy zapisie dostępności");
-      }
-    }}
-    style={{ marginLeft: 8 }}
-  >
-    Add availability
-  </button>
-</div>
+        <div>
+          <form className="account-form" onSubmit={handleServicesSubmit}>
+            <h3>Services</h3>
+            <label>
+              <input type="checkbox" name="is_dog_sitter" checked={services.is_dog_sitter} onChange={handleServicesChange} />
+              Dog care
+            </label>
+            <label>
+              <input type="checkbox" name="is_cat_sitter" checked={services.is_cat_sitter} onChange={handleServicesChange} />
+              Cat care
+            </label>
+            <label>
+              <input type="checkbox" name="is_rodent_sitter" checked={services.is_rodent_sitter} onChange={handleServicesChange} />
+              Rodent care
+            </label>
+            <input type="number" name="hourly_rate" placeholder="Hourly rate" value={services.hourly_rate || ""} onChange={handleServicesChange} />
+            <label>
+              <input type="checkbox" name="care_at_owner_home" checked={services.care_at_owner_home} onChange={handleServicesChange} />
+              Care at owner home
+            </label>
+            <label>
+              <input type="checkbox" name="care_at_petsitter_home" checked={services.care_at_petsitter_home} onChange={handleServicesChange} />
+              Care at petsitter home
+            </label>
+            <label>
+              <input type="checkbox" name="dog_walking" checked={services.dog_walking} onChange={handleServicesChange} />
+              Dog walking
+            </label>
+            <button type="submit" className="account-save-btn">Save Services</button>
+          </form>
 
-<ul>
-  {availabilityList.map(item => (
-    <li key={item.id} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <span>{item.date} – {item.is_available ? "Available" : "Unavailable"}</span>
-      <button
-        type="button"
-        style={{
-          background: "#eae5df",
-          color: "#5c5c5c",
-          border: "none",
-          borderRadius: "8px",
-          padding: "4px 12px",
-          cursor: "pointer"
-        }}
-        onClick={() => handleDeleteAvailability(item.id)}
-      >
-        Cancel
-      </button>
-    </li>
-  ))}
-</ul>
-
-    </form>
-  );
-  
-}
+          <div style={{ marginTop: 32 }}>
+            <h3>Availability</h3>
+            <p style={{ color: '#5b5856', fontSize: '0.95rem', marginBottom: 16 }}>Click on days to toggle availability, then click Save.</p>
+            <AvailabilityCalendar
+              availabilityList={pendingAvailability.map(date => ({ date }))}
+              onToggleAvailability={handleToggleAvailability}
+            />
+            <button type="button" className="account-save-btn" onClick={handleSaveAvailability} style={{ marginTop: 16 }}>
+              Save Availability
+            </button>
+          </div>
+        </div>
+      );
+    }
     return null;
   };
 
   return (
     <div className="account-wrapper">
 <nav className="top-nav">
-
+                <Link to="/">HOME</Link>
                 <a href="/visits">MY VISITS</a>
                 {!isPetsitter && (
                    <Link to="/join-petsitter">JOIN AS PETSITTER</Link>

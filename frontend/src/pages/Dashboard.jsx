@@ -47,14 +47,18 @@ function Dashboard() {
     setSelectedPetsitter(petsitter);
     setShowModal(true);
     };
-    const handleConfirmBooking = async () => {
+    const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleConfirmBooking = async () => {
   if (!selectedPetsitter || !startDate || !endDate || !careType) {
-    alert("Uzupełnij wszystkie dane rezerwacji!");
+    setErrorMessage("Please complete all booking details!");
+    setTimeout(() => setErrorMessage(""), 4000);
     return;
   }
   try {
     const token = localStorage.getItem("access");
-    const userId = localStorage.getItem("user_id"); 
+    const userId = localStorage.getItem("user_id");
     const payload = {
       user: userId,
       petsitter: selectedPetsitter.id,
@@ -70,14 +74,13 @@ function Dashboard() {
       payload,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    alert("Wizyta została zarezerwowana!");
+    setSuccessMessage("Visit successfully booked!");
+    setTimeout(() => setSuccessMessage(""), 4000);
     setShowModal(false);
     setSelectedPetsitter(null);
   } catch (err) {
-    if (err.response) {
-      console.log("Error response data:", err.response.data);
-    }
-    alert("Błąd podczas rezerwacji wizyty.");
+    setErrorMessage("Error while booking visit. Please try again.");
+    setTimeout(() => setErrorMessage(""), 4000);
   }
 };
 const handleCancelBooking = () => {
@@ -99,11 +102,8 @@ const handleCancelBooking = () => {
             console.log("API response:", res.data);
             setResults(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
-        if (err.response) {
-                alert("Błąd podczas rezerwacji wizyty.");
-            } else {
-                alert("Błąd podczas rezerwacji wizyty.");
-            }
+            setErrorMessage("Error loading petsitters. Please try again.");
+            setTimeout(() => setErrorMessage(""), 4000);
         }
 
     };
@@ -131,6 +131,40 @@ const handleCancelBooking = () => {
   }, []);
     return (
         <div className="dashboard">
+            {successMessage && (
+                <div style={{
+                    position: "fixed",
+                    top: "20px",
+                    right: "20px",
+                    background: "#d4edda",
+                    color: "#155724",
+                    padding: "16px 24px",
+                    borderRadius: "8px",
+                    border: "1px solid #c3e6cb",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    zIndex: 1000,
+                    animation: "slideIn 0.3s ease"
+                }}>
+                    {successMessage}
+                </div>
+            )}
+            {errorMessage && (
+                <div style={{
+                    position: "fixed",
+                    top: "20px",
+                    right: "20px",
+                    background: "#f8d7da",
+                    color: "#721c24",
+                    padding: "16px 24px",
+                    borderRadius: "8px",
+                    border: "1px solid #f5c6cb",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    zIndex: 1000,
+                    animation: "slideIn 0.3s ease"
+                }}>
+                    {errorMessage}
+                </div>
+            )}
             <nav className="top-nav">
                 {isAdmin && (
                     <Link to="/admin-users">ADMIN PANEL</Link>

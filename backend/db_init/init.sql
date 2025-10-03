@@ -1,16 +1,16 @@
-CREATE TABLE "user" (
-    "id" SERIAL PRIMARY KEY,
-    "email" VARCHAR(255),
-    "password" VARCHAR(255),
-    "first_name" VARCHAR(100),
-    "last_name" VARCHAR(100),
-    "phone" VARCHAR(20),
-    "city" VARCHAR(100),
-    "street" VARCHAR(100),
-    "house_number" VARCHAR(20),
-    "apartment_number" VARCHAR(20),
-    "postal_code" VARCHAR(10)
-);
+-- CREATE TABLE "user" (
+--     "id" SERIAL PRIMARY KEY,
+--     "email" VARCHAR(255),
+--     "password" VARCHAR(255),
+--     "first_name" VARCHAR(100),
+--     "last_name" VARCHAR(100),
+--     "phone" VARCHAR(20),
+--     "city" VARCHAR(100),
+--     "street" VARCHAR(100),
+--     "house_number" VARCHAR(20),
+--     "apartment_number" VARCHAR(20),
+--     "postal_code" VARCHAR(10)
+-- );
 
 CREATE TABLE "pet" (
     "id" SERIAL PRIMARY KEY,
