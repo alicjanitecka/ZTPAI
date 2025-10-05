@@ -58,7 +58,8 @@
 }
 
 .account-form input,
-.account-form textarea {
+.account-form textarea,
+.account-form select {
     padding: 12px;
     border: 2px solid transparent;
     border-radius: 8px;
@@ -69,8 +70,19 @@
     transition: all 0.3s ease;
 }
 
+.account-form select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b5856' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
+}
+
 .account-form input:focus,
-.account-form textarea:focus {
+.account-form textarea:focus,
+.account-form select:focus {
     outline: none;
     border-color: #b7ab9e;
     background-color: #fff;
@@ -91,6 +103,30 @@
 
 .account-form label:hover {
     color: #b7ab9e;
+}
+
+/* Profile photo upload button */
+.profile-photo-upload {
+    cursor: pointer;
+    padding: 14px 32px;
+    background-color: #b7ab9e;
+    color: #fff !important;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 200px;
+}
+
+.profile-photo-upload:hover {
+    background-color: #a08c6b;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
 }
 
 .account-form input[type="checkbox"] {
@@ -144,7 +180,7 @@
     font-size: 1rem;
     cursor: pointer;
     letter-spacing: 1px;
-    margin-top: 24px;
+    margin-top: 24;
     font-weight: 600;
     transition: all 0.3s ease;
 }
@@ -179,6 +215,7 @@
     padding: 16px 20px;
     border-radius: 12px;
     display: flex;
+    gap: 16px;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);

@@ -38,8 +38,8 @@ class PetListCreateView(APIView):
     def post(self, request):
         serializer = PetSerializer(data=request.data)
         if serializer.is_valid():
-            pet = PetService().create_pet(request.user, **serializer.validated_data)
-            return Response(PetSerializer(pet).data, status=status.HTTP_201_CREATED)
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class PetUpdateDeleteView(APIView):
@@ -87,7 +87,7 @@ class PetUpdateDeleteView(APIView):
             return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         serializer = PetSerializer(pet, data=request.data, partial=True)
         if serializer.is_valid():
-            PetService().update_pet(pet, **serializer.validated_data)
+            serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

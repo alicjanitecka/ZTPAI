@@ -37,7 +37,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_is_petsitter(self, obj):
         return Petsitter.objects.filter(user=obj).exists()
     class Meta:
-        model = CustomUser 
+        model = CustomUser
         fields = [
             'id',
             'email',
@@ -49,6 +49,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'house_number',
             'apartment_number',
             'postal_code',
+            'photo',
             'is_petsitter'
         ]
         read_only_fields = ['id', 'email']
@@ -63,11 +64,17 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 class PetsitterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     city = serializers.CharField(source='user.city', read_only=True)
+    photo = serializers.SerializerMethodField()
+
+    def get_photo(self, obj):
+        if obj.user.photo:
+            return obj.user.photo.url
+        return None
 
     class Meta:
         model = Petsitter
         fields = [
-            'id', 'username', 'city', 'description', 'hourly_rate',
+            'id', 'username', 'city', 'photo', 'description', 'hourly_rate',
             'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
             'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking'
         ]

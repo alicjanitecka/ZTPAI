@@ -26,9 +26,15 @@ function buildServices(p) {
 
 function buildLocation(p) {
   let arr = [];
-  if (p.care_at_petsitter_home) arr.push("at pet sitter’s home");
+  if (p.care_at_petsitter_home) arr.push("at pet sitter's home");
   if (p.care_at_owner_home) arr.push("at owner's home");
   return arr.join(" / ") || "N/A";
+}
+
+function getMediaUrl(path) {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `http://localhost:8000${path}`;
 }
 
 function Dashboard() {
@@ -99,7 +105,6 @@ const handleCancelBooking = () => {
             if (startDate) params.start_date = startDate;
             if (endDate) params.end_date = endDate;
             const res = await axios.get("http://localhost:8000/api/v1/petsitters/search/", { params });
-            console.log("API response:", res.data);
             setResults(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
             setErrorMessage("Error loading petsitters. Please try again.");
@@ -227,7 +232,7 @@ const handleCancelBooking = () => {
                 {results.map(p => (
                 <div key={p.id} className="petsitter-result">
                     <div className="petsitter-avatar">
-                        <img src={defaultAvatar} alt="avatar" />
+                        <img src={p.photo ? getMediaUrl(p.photo) : defaultAvatar} alt="avatar" />
                     </div>
                     <div className="petsitter-info">
                         <div className="petsitter-name-age">

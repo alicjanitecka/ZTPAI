@@ -14,6 +14,7 @@ class CustomUser(AbstractUser):
     house_number = models.CharField(max_length=10, blank=True)
     apartment_number = models.CharField(max_length=10, blank=True)
     postal_code = models.CharField(max_length=20, blank=True)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -60,11 +61,11 @@ class Visit(models.Model):
 class Pet(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
     name = models.CharField(max_length=100,  db_index=True)
-    age = models.PositiveIntegerField()
+    age = models.DecimalField(max_digits=4, decimal_places=1)
     breed = models.CharField(max_length=100, blank=True)
     additional_info = models.TextField(blank=True)
-    photo_url = models.CharField(max_length=255, blank=True)
-    pet_type = models.CharField(max_length=10)  
+    photo = models.ImageField(upload_to='pet_photos/', blank=True, null=True)
+    pet_type = models.CharField(max_length=10)
     class Meta:
         db_table = 'pet'
     def __str__(self):

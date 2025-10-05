@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import "../styles/MyAccount.css";
 import api from "../api";
 import AvailabilityCalendar from "./AvailabilityCalendar";
+import ImageCropper from "./ImageCropper";
 
 
 function MyAccount() {
@@ -39,9 +40,61 @@ const [pendingAvailability, setPendingAvailability] = useState([]);
     age: "",
     breed: "",
     additional_info: "",
-    photo_url: "",
+    photo: null,
     pet_type: "",
   });
+  const [petPhotoPreview, setPetPhotoPreview] = useState(null);
+  const [editPetPhotoPreview, setEditPetPhotoPreview] = useState(null);
+
+  const [showCropper, setShowCropper] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState(null);
+  const [cropperType, setCropperType] = useState(null); // 'profile', 'pet', 'editPet'
+
+  const getMediaUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return `http://localhost:8000${path}`;
+  };
+
+  const breedOptions = {
+    dog: [
+      "Labrador Retriever",
+      "German Shepherd",
+      "Golden Retriever",
+      "Bulldog",
+      "Poodle",
+      "Beagle",
+      "Rottweiler",
+      "Yorkshire Terrier",
+      "Boxer",
+      "Dachshund",
+      "Husky",
+      "Kundelek (Mixed Breed)"
+    ],
+    cat: [
+      "Persian",
+      "Siamese",
+      "Maine Coon",
+      "British Shorthair",
+      "Sphynx",
+      "Bengal",
+      "Ragdoll",
+      "Scottish Fold",
+      "Abyssinian",
+      "Russian Blue",
+      "Dachowiec (Mixed Breed)"
+    ],
+    rodent: [
+      "Hamster",
+      "Guinea Pig",
+      "Rabbit",
+      "Chinchilla",
+      "Rat",
+      "Mouse",
+      "Gerbil",
+      "Ferret"
+    ]
+  };
 
 
   const [services, setServices] = useState({
@@ -64,7 +117,7 @@ const [pendingAvailability, setPendingAvailability] = useState([]);
           headers: { Authorization: `Bearer ${token}` }
         });
         setForm(res.data);
-        if (res.data.photo) setAvatarPreview(res.data.photo);
+        if (res.data.photo) setAvatarPreview(getMediaUrl(res.data.photo));
         setIsPetsitter(res.data.is_petsitter || false);
 
         const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
@@ -102,16 +155,35 @@ useEffect(() => {
     : ["personal data", "my pets"];
 
   const handlePetChange = e => {
-    const { name, value } = e.target;
-    setPetForm(f => ({ ...f, [name]: value }));
+    const { name, value, type, files } = e.target;
+    if (type === "file" && name === "photo") {
+      if (files[0]) {
+        setImageToCrop(URL.createObjectURL(files[0]));
+        setCropperType('pet');
+        setShowCropper(true);
+      }
+    } else {
+      setPetForm(f => ({ ...f, [name]: value }));
+    }
   };
 
   const handlePetSubmit = async e => {
     e.preventDefault();
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
-      await axios.post("http://localhost:8000/api/v1/pets/", petForm, {
-        headers: { Authorization: `Bearer ${token}` }
+      const formData = new FormData();
+      formData.append("name", petForm.name);
+      formData.append("age", petForm.age);
+      formData.append("breed", petForm.breed);
+      formData.append("pet_type", petForm.pet_type);
+      if (petForm.additional_info) formData.append("additional_info", petForm.additional_info);
+      if (petForm.photo) formData.append("photo", petForm.photo);
+
+      await axios.post("http://localhost:8000/api/v1/pets/", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
       });
       const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
         headers: { Authorization: `Bearer ${token}` }
@@ -122,9 +194,10 @@ useEffect(() => {
         age: "",
         breed: "",
         additional_info: "",
-        photo_url: "",
+        photo: null,
         pet_type: "",
       });
+      setPetPhotoPreview(null);
     } catch (err) {
       alert("Błąd przy dodawaniu zwierzęcia");
     }
@@ -221,27 +294,76 @@ const handleUserDataSubmit = async (e) => {
   e.preventDefault();
   const token = localStorage.getItem(ACCESS_TOKEN);
   try {
-    await axios.patch("http://localhost:8000/api/v1/profile/", form, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    let payload;
+    let headers = { Authorization: `Bearer ${token}` };
+
+    if (form.photo instanceof File) {
+      const formData = new FormData();
+      Object.keys(form).forEach(key => {
+        if (form[key] !== null && form[key] !== undefined && form[key] !== "") {
+          formData.append(key, form[key]);
+        }
+      });
+      payload = formData;
+      headers["Content-Type"] = "multipart/form-data";
+    } else {
+      payload = form;
+    }
+
+    const res = await axios.patch("http://localhost:8000/api/v1/profile/", payload, { headers });
+    setForm(res.data);
+    if (res.data.photo) setAvatarPreview(getMediaUrl(res.data.photo));
     alert("Dane zapisane!");
   } catch (err) {
     alert("Błąd podczas zapisywania danych.");
   }
 };
 const handleChange = (e) => {
-  const { name, value } = e.target;
-  setForm(f => ({
-    ...f,
-    [name]: value
-  }));
+  const { name, value, type, files } = e.target;
+  if (type === "file" && name === "photo") {
+    if (files[0]) {
+      setImageToCrop(URL.createObjectURL(files[0]));
+      setCropperType('profile');
+      setShowCropper(true);
+    }
+  } else if (type === "file") {
+    setForm(f => ({ ...f, [name]: files[0] }));
+  } else {
+    setForm(f => ({ ...f, [name]: value }));
+  }
+};
+
+const handleCropComplete = (croppedBlob) => {
+  if (cropperType === 'profile') {
+    const file = new File([croppedBlob], "profile.jpg", { type: "image/jpeg" });
+    setForm(f => ({ ...f, photo: file }));
+    setAvatarPreview(URL.createObjectURL(croppedBlob));
+  } else if (cropperType === 'pet') {
+    const file = new File([croppedBlob], "pet.jpg", { type: "image/jpeg" });
+    setPetForm(f => ({ ...f, photo: file }));
+    setPetPhotoPreview(URL.createObjectURL(croppedBlob));
+  } else if (cropperType === 'editPet') {
+    const file = new File([croppedBlob], "pet.jpg", { type: "image/jpeg" });
+    setEditingPet({ ...editingPet, photo: file });
+    setEditPetPhotoPreview(URL.createObjectURL(croppedBlob));
+  }
+  setShowCropper(false);
+  setImageToCrop(null);
+  setCropperType(null);
+};
+
+const handleCropCancel = () => {
+  setShowCropper(false);
+  setImageToCrop(null);
+  setCropperType(null);
 };
 const handleEditPet = (pet) => {
   setEditingPet({
     ...pet,
-    photo_url: pet.photo_url || "",
+    photo: null,
     additional_info: pet.additional_info || ""
   });
+  setEditPetPhotoPreview(pet.photo ? getMediaUrl(pet.photo) : null);
 };
 
 const handleDeletePet = async (id) => {
@@ -258,8 +380,31 @@ const handleDeletePet = async (id) => {
 
   const renderTab = () => {
     if (activeTab === "personal data") {
+      const profileImageSrc = form.photo instanceof File
+        ? URL.createObjectURL(form.photo)
+        : (avatarPreview || defaultAvatar);
+
       return (
         <form className="account-form" onSubmit={handleUserDataSubmit}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center", marginBottom: "20px" }}>
+          <div style={{ position: "relative", width: "120px", height: "120px", borderRadius: "50%", overflow: "hidden", border: "3px solid #e0e0e0" }}>
+            <img
+              src={profileImageSrc}
+              alt="Profile"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+          <label className="profile-photo-upload">
+            Upload Profile Photo
+            <input
+              type="file"
+              name="photo"
+              accept="image/*"
+              onChange={handleChange}
+              style={{ display: "none" }}
+            />
+          </label>
+        </div>
         <input type="text" name="first_name" placeholder="First name" value={form.first_name} onChange={handleChange} required />
         <input type="text" name="last_name" placeholder="Last name" value={form.last_name} onChange={handleChange} required />
         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
@@ -278,11 +423,45 @@ const handleDeletePet = async (id) => {
         <div>
         <h3>Add pet</h3>
         <form onSubmit={handlePetSubmit} className="account-form">
+        <select name="pet_type" value={petForm.pet_type} onChange={handlePetChange} required>
+          <option value="">Select pet type</option>
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+          <option value="rodent">Rodent</option>
+        </select>
+
         <input type="text" name="name" placeholder="Name" value={petForm.name} onChange={handlePetChange} required />
-        <input type="number" name="age" placeholder="Age" value={petForm.age} onChange={handlePetChange} required />
-        <input type="text" name="breed" placeholder="Breed" value={petForm.breed} onChange={handlePetChange} />
-        <input type="text" name="pet_type" placeholder="Pet type" value={petForm.pet_type} onChange={handlePetChange} required />
-        <input type="text" name="photo_url" placeholder="Photo" value={petForm.photo_url} onChange={handlePetChange} />
+
+        <input
+          type="number"
+          name="age"
+          placeholder="Age"
+          value={petForm.age}
+          onChange={handlePetChange}
+          min="0.5"
+          step="0.5"
+          required
+        />
+
+        {petForm.pet_type && (
+          <select name="breed" value={petForm.breed} onChange={handlePetChange}>
+            <option value="">Select breed</option>
+            {breedOptions[petForm.pet_type]?.map(breed => (
+              <option key={breed} value={breed}>{breed}</option>
+            ))}
+          </select>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <label style={{ fontSize: "0.9rem", color: "#5b5856" }}>Pet Photo</label>
+          {petPhotoPreview && (
+            <div style={{ width: "100px", height: "100px", borderRadius: "8px", overflow: "hidden", marginBottom: "8px" }}>
+              <img src={petPhotoPreview} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+          )}
+          <input type="file" name="photo" accept="image/*" onChange={handlePetChange} />
+        </div>
+
         <textarea name="additional_info" placeholder="Additional information" value={petForm.additional_info} onChange={handlePetChange} />
         <button type="submit" className="account-save-btn">Add pet</button>
         </form>
@@ -291,6 +470,11 @@ const handleDeletePet = async (id) => {
 <ul className="pet-list">
   {pets.map(pet => (
     <li key={pet.id} className="pet-item">
+      {pet.photo && (
+        <div style={{ width: "60px", height: "60px", borderRadius: "8px", overflow: "hidden", flexShrink: 0 }}>
+          <img src={getMediaUrl(pet.photo)} alt={pet.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      )}
       <div className="pet-info">
         <b>{pet.name}</b> ({pet.pet_type}, {pet.age} lat) - {pet.breed}
       </div>
@@ -309,64 +493,120 @@ const handleDeletePet = async (id) => {
       e.preventDefault();
       const token = localStorage.getItem(ACCESS_TOKEN);
       try {
-        const { id, user, ...editableFields } = editingPet;
+        const formData = new FormData();
+        formData.append("name", editingPet.name);
+        formData.append("age", editingPet.age);
+        formData.append("breed", editingPet.breed);
+        formData.append("pet_type", editingPet.pet_type);
+        if (editingPet.additional_info) formData.append("additional_info", editingPet.additional_info);
+        if (editingPet.photo instanceof File) formData.append("photo", editingPet.photo);
+
         await axios.patch(
           `http://localhost:8000/api/v1/pets/${editingPet.id}/`,
-          editableFields,
-          { headers: { Authorization: `Bearer ${token}` } }
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data"
+            }
+          }
         );
         const petsRes = await axios.get("http://localhost:8000/api/v1/pets/", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setPets(petsRes.data);
         setEditingPet(null);
+        setEditPetPhotoPreview(null);
       } catch (err) {
         alert("Błąd przy edycji zwierzęcia");
       }
     }}
   >
     <h4>Edit pet: {editingPet.name}</h4>
+
+    <select
+      name="pet_type"
+      value={editingPet.pet_type}
+      onChange={e => setEditingPet({ ...editingPet, pet_type: e.target.value, breed: "" })}
+      required
+    >
+      <option value="">Select pet type</option>
+      <option value="dog">Dog</option>
+      <option value="cat">Cat</option>
+      <option value="rodent">Rodent</option>
+    </select>
+
     <input
       type="text"
       name="name"
+      placeholder="Name"
       value={editingPet.name}
       onChange={e => setEditingPet({ ...editingPet, name: e.target.value })}
       required
     />
+
     <input
       type="number"
       name="age"
+      placeholder="Age"
       value={editingPet.age}
       onChange={e => setEditingPet({ ...editingPet, age: e.target.value })}
+      min="0.5"
+      step="0.5"
       required
     />
-    <input
-      type="text"
-      name="breed"
-      value={editingPet.breed}
-      onChange={e => setEditingPet({ ...editingPet, breed: e.target.value })}
-    />
-    <input
-      type="text"
-      name="pet_type"
-      value={editingPet.pet_type}
-      onChange={e => setEditingPet({ ...editingPet, pet_type: e.target.value })}
-      required
-    />
-    <input
-      type="text"
-      name="photo_url"
-      value={editingPet.photo_url}
-      onChange={e => setEditingPet({ ...editingPet, photo_url: e.target.value })}
-    />
+
+    {editingPet.pet_type && (
+      <select
+        name="breed"
+        value={editingPet.breed}
+        onChange={e => setEditingPet({ ...editingPet, breed: e.target.value })}
+      >
+        <option value="">Select breed</option>
+        {breedOptions[editingPet.pet_type]?.map(breed => (
+          <option key={breed} value={breed}>{breed}</option>
+        ))}
+      </select>
+    )}
+
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <label style={{ fontSize: "0.9rem", color: "#5b5856" }}>Pet Photo</label>
+      {(editingPet.photo || editPetPhotoPreview) && (
+        <div style={{ width: "100px", height: "100px", borderRadius: "8px", overflow: "hidden", marginBottom: "8px" }}>
+          <img
+            src={editingPet.photo instanceof File ? URL.createObjectURL(editingPet.photo) : editPetPhotoPreview}
+            alt="Preview"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+      )}
+      <input
+        type="file"
+        name="photo"
+        accept="image/*"
+        onChange={e => {
+          if (e.target.files[0]) {
+            setImageToCrop(URL.createObjectURL(e.target.files[0]));
+            setCropperType('editPet');
+            setShowCropper(true);
+          }
+        }}
+      />
+    </div>
+
     <textarea
       name="additional_info"
+      placeholder="Additional information"
       value={editingPet.additional_info}
       onChange={e => setEditingPet({ ...editingPet, additional_info: e.target.value })}
     />
+
     <div className="edit-pet-actions">
       <button type="submit" className="account-save-btn">Zapisz zmiany</button>
-      <button type="button" className="pet-cancel-btn" onClick={() => setEditingPet(null)}>Anuluj</button>
+      <button type="button" className="pet-cancel-btn" onClick={() => {
+        setEditingPet(null);
+        setEditPetPhotoPreview(null);
+      }}>Anuluj</button>
     </div>
   </form>
 )}
@@ -455,6 +695,13 @@ const handleDeletePet = async (id) => {
           {loading ? <p>Loading...</p> : renderTab()}
         </div>
       </div>
+      {showCropper && imageToCrop && (
+        <ImageCropper
+          image={imageToCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
     </div>
   );
 }
