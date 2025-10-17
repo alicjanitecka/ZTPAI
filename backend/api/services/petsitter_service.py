@@ -20,5 +20,5 @@ class PetsitterService:
 
     def delete_petsitter(self, petsitter):
         self.repo.delete(petsitter)
-    def search_petsitters(self, city=None, pet_type=None, care_type=None, date=None):
-        return self.repo.search(city=city, pet_type=pet_type, care_type=care_type, date=date)
+    def search_petsitters(self, city=None, pet_type=None, care_type=None, date=None, min_rating=None):
+        return self.repo.search(city=city, pet_type=pet_type, care_type=care_type, date=date, min_rating=min_rating)

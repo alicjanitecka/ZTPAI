@@ -249,6 +249,19 @@ body {
     font-weight: 600;
 }
 
+.petsitter-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.reviews-count-text {
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: 400;
+}
+
 .petsitter-experience,
 .petsitter-services,
 .petsitter-location {

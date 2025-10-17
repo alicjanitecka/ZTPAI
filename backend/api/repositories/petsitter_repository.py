@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Avg
 from api.models import Petsitter, PetsitterAvailability
 
 class PetsitterRepository:
@@ -19,7 +19,7 @@ class PetsitterRepository:
 
     def delete(self, petsitter):
         petsitter.delete()
-    def search(self, city=None, pet_type=None, care_type=None, date=None):
+    def search(self, city=None, pet_type=None, care_type=None, date=None, min_rating=None):
         qs = Petsitter.objects.select_related('user').all()
 
         if city:
@@ -39,5 +39,7 @@ class PetsitterRepository:
         elif care_type == 'care_at_petsitter_home':
             qs = qs.filter(care_at_petsitter_home=True)
 
+        if min_rating:
+            qs = qs.annotate(avg_rating=Avg('reviews__rating')).filter(avg_rating__gte=float(min_rating))
 
         return qs.distinct()

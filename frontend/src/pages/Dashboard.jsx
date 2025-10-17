@@ -1,7 +1,7 @@
 import axios from "axios";
 import "../styles/Dashboard.css";
 import logo from "../assets/logo.svg";
-import homeCare from "../assets/home-care.svg"; 
+import homeCare from "../assets/home-care.svg";
 import sitterCare from "../assets/petsitter-care.svg";
 import walkDog from "../assets/dog-walking.svg";
 import defaultAvatar from "../assets/default-avatar.svg";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
+import StarRating from "../components/StarRating";
 
 <Link to="/logout">WYLOGUJ</Link>
 
@@ -45,6 +46,7 @@ function Dashboard() {
     const [careType, setCareType] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
+    const [minRating, setMinRating] = useState("");
     const [results, setResults] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [isPetsitter, setIsPetsitter] = useState(false);
@@ -104,6 +106,7 @@ const handleCancelBooking = () => {
             if (careType) params.care_type = careType;
             if (startDate) params.start_date = startDate;
             if (endDate) params.end_date = endDate;
+            if (minRating) params.min_rating = minRating;
             const res = await axios.get("http://localhost:8000/api/v1/petsitters/search/", { params });
             setResults(Array.isArray(res.data) ? res.data : []);
         } catch (err) {
@@ -221,6 +224,14 @@ const handleCancelBooking = () => {
                         <option value="care_at_owner_home">Care at owner's home</option>
                         <option value="care_at_petsitter_home">Care at petsitter's home</option>
                     </select>
+                    <select value={minRating} onChange={e => setMinRating(e.target.value)}>
+                        <option value="">minimum rating</option>
+                        <option value="1">⭐ 1+</option>
+                        <option value="2">⭐ 2+</option>
+                        <option value="3">⭐ 3+</option>
+                        <option value="4">⭐ 4+</option>
+                        <option value="5">⭐ 5</option>
+                    </select>
                     <button className="search-button" type="submit">
                         <FaSearch />
                     </button>
@@ -240,6 +251,12 @@ const handleCancelBooking = () => {
                             {p.username && <span className="petsitter-name">{p.username.toUpperCase()}</span>}
                             {p.age && <span className="petsitter-age">({p.age})</span>}
                             </div>
+                            {p.average_rating > 0 && (
+                            <div className="petsitter-rating">
+                                <StarRating rating={p.average_rating} size="small" />
+                                <span className="reviews-count-text">({p.reviews_count} {p.reviews_count === 1 ? 'review' : 'reviews'})</span>
+                            </div>
+                            )}
                             <div className="petsitter-experience">
                             <b>Experience:</b> {p.experience ? `${p.experience} years` : "N/A"}
                             </div>

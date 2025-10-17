@@ -70,3 +70,20 @@ class Pet(models.Model):
         db_table = 'pet'
     def __str__(self):
         return f"{self.name} ({self.pet_type})"
+
+class Review(models.Model):
+    visit = models.OneToOneField('Visit', on_delete=models.CASCADE, related_name='review', db_index=True)
+    petsitter = models.ForeignKey('Petsitter', on_delete=models.CASCADE, related_name='reviews', db_index=True)
+    reviewer = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='reviews_given')
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # 1-5 stars
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'review'
+        unique_together = ['visit', 'reviewer']  # One review per visit per reviewer
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Review by {self.reviewer.username} for {self.petsitter.user.username} - {self.rating} stars"

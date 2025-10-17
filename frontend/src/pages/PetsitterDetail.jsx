@@ -4,6 +4,7 @@ import axios from "axios";
 import "../styles/PetsitterDetail.css";
 import defaultAvatar from "../assets/default-avatar.svg";
 import { FaArrowLeft, FaMapMarkerAlt, FaDollarSign, FaClock, FaPaw } from "react-icons/fa";
+import StarRating from "../components/StarRating";
 
 function getMediaUrl(path) {
   if (!path) return null;
@@ -23,6 +24,8 @@ function PetsitterDetail() {
   const [careType, setCareType] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
 
   useEffect(() => {
     const fetchPetsitterDetails = async () => {
@@ -36,6 +39,22 @@ function PetsitterDetail() {
       }
     };
     fetchPetsitterDetails();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const res = await axios.get(`http://localhost:8000/api/v1/reviews/petsitter/?petsitter_id=${id}`);
+        setReviews(res.data.results || res.data);
+      } catch (err) {
+        console.error("Failed to load reviews", err);
+      }
+      setReviewsLoading(false);
+    };
+    if (id) {
+      fetchReviews();
+    }
   }, [id]);
 
   const handleBooking = async () => {
@@ -122,6 +141,14 @@ function PetsitterDetail() {
           <div className="petsitter-main-info">
             <h1 className="petsitter-name">{petsitter.username || "Unnamed Petsitter"}</h1>
 
+            {/* Rating Display */}
+            {petsitter.average_rating > 0 && (
+              <div className="info-item rating-display">
+                <StarRating rating={petsitter.average_rating} size="medium" />
+                <span className="reviews-count">({petsitter.reviews_count} {petsitter.reviews_count === 1 ? 'review' : 'reviews'})</span>
+              </div>
+            )}
+
             {petsitter.city && (
               <div className="info-item">
                 <FaMapMarkerAlt className="info-icon" />
@@ -180,6 +207,45 @@ function PetsitterDetail() {
                 <p className="no-data">No locations specified</p>
               )}
             </div>
+          </div>
+
+          <div className="detail-card reviews-section">
+            <h2 className="card-title">Reviews ({reviews.length})</h2>
+            {reviewsLoading ? (
+              <p className="loading-text">Loading reviews...</p>
+            ) : reviews.length > 0 ? (
+              <div className="reviews-list">
+                {reviews.map((review) => (
+                  <div key={review.id} className="review-item">
+                    <div className="review-header">
+                      <div className="reviewer-info">
+                        <img
+                          src={review.reviewer_photo ? getMediaUrl(review.reviewer_photo) : defaultAvatar}
+                          alt={review.reviewer_username}
+                          className="reviewer-avatar"
+                        />
+                        <div className="reviewer-details">
+                          <span className="reviewer-name">{review.reviewer_username}</span>
+                          <span className="review-date">
+                            {new Date(review.created_at).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <StarRating rating={review.rating} size="small" />
+                    </div>
+                    {review.comment && (
+                      <p className="review-comment">{review.comment}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-data">No reviews yet. Be the first to review this petsitter!</p>
+            )}
           </div>
         </div>
       </div>

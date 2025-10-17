@@ -7,6 +7,7 @@ import { ACCESS_TOKEN } from "../constants";
 import { Link } from "react-router-dom";
 import api from "../api";
 import { FaSearch, FaFilter } from "react-icons/fa";
+import StarRating from "../components/StarRating";
 
 function Visits() {
   const [visits, setVisits] = useState({ results: [] });
@@ -16,6 +17,12 @@ function Visits() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all"); // "all", "pending", "confirmed", "canceled"
   const [sortBy, setSortBy] = useState("date_desc"); // "date_asc", "date_desc"
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedVisitForReview, setSelectedVisitForReview] = useState(null);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchVisits = async (url = null) => {
     setLoading(true);
@@ -72,6 +79,45 @@ function Visits() {
     }
   };
 
+  const handleReviewClick = (visit) => {
+    setSelectedVisitForReview(visit);
+    setReviewRating(0);
+    setReviewComment("");
+    setShowReviewModal(true);
+  };
+
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0) {
+      setErrorMessage("Please select a rating");
+      setTimeout(() => setErrorMessage(""), 3000);
+      return;
+    }
+
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    try {
+      await axios.post(
+        "http://localhost:8000/api/v1/reviews/",
+        {
+          visit: selectedVisitForReview.id,
+          petsitter: selectedVisitForReview.petsitter,
+          rating: reviewRating,
+          comment: reviewComment,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSuccessMessage("Review submitted successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      setShowReviewModal(false);
+      setSelectedVisitForReview(null);
+      setReviewRating(0);
+      setReviewComment("");
+      fetchVisits(); // Refresh to show review was added
+    } catch (err) {
+      setErrorMessage(err.response?.data?.error || "Error submitting review");
+      setTimeout(() => setErrorMessage(""), 3000);
+    }
+  };
+
   const isPastVisit = (endDate) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -121,6 +167,17 @@ function Visits() {
 
   return (
     <div className="visits-page">
+      {successMessage && (
+        <div className="notification success-notification">
+          {successMessage}
+        </div>
+      )}
+      {errorMessage && (
+        <div className="notification error-notification">
+          {errorMessage}
+        </div>
+      )}
+
       <nav className="top-nav">
         <Link to="/">HOME</Link>
         <Link to="/visits">MY VISITS</Link>
@@ -270,6 +327,19 @@ function Visits() {
                         </button>
                       </>
                     )}
+                    {/* Show review button only for past, confirmed visits where user is owner */}
+                    {isPast && v.confirmed && !v.canceled && activeTab === "owner" && !v.review && (
+                      <button
+                        className="action-btn review-btn"
+                        onClick={() => handleReviewClick(v)}
+                      >
+                        Leave Review
+                      </button>
+                    )}
+                    {/* Show if review already exists */}
+                    {v.review && (
+                      <span className="review-exists">✓ Reviewed</span>
+                    )}
                   </div>
                 </div>
               );
@@ -292,6 +362,55 @@ function Visits() {
           </div>
         )}
       </div>
+
+      {/* Review Modal */}
+      {showReviewModal && selectedVisitForReview && (
+        <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
+          <div className="review-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Leave a Review</h2>
+            <p className="modal-subtitle">
+              for {selectedVisitForReview.petsitter_username}
+            </p>
+
+            <div className="review-form">
+              <div className="form-group">
+                <label>Rating</label>
+                <div className="rating-selector">
+                  <StarRating
+                    rating={reviewRating}
+                    interactive={true}
+                    onRatingChange={setReviewRating}
+                    size="large"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Comment (optional)</label>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Share your experience..."
+                  className="review-textarea"
+                  rows={5}
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button className="confirm-booking-btn" onClick={handleSubmitReview}>
+                  Submit Review
+                </button>
+                <button
+                  className="cancel-booking-btn"
+                  onClick={() => setShowReviewModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

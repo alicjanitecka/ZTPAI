@@ -1,5 +1,5 @@
 
-from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability
+from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability, Review
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -65,18 +65,30 @@ class PetsitterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     city = serializers.CharField(source='user.city', read_only=True)
     photo = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+    reviews_count = serializers.SerializerMethodField()
 
     def get_photo(self, obj):
         if obj.user.photo:
             return obj.user.photo.url
         return None
 
+    def get_average_rating(self, obj):
+        from api.repositories.review_repository import ReviewRepository
+        avg = ReviewRepository().get_average_rating(obj)
+        return round(avg, 1) if avg else 0
+
+    def get_reviews_count(self, obj):
+        from api.repositories.review_repository import ReviewRepository
+        return ReviewRepository().get_reviews_count(obj)
+
     class Meta:
         model = Petsitter
         fields = [
             'id', 'username', 'city', 'photo', 'description', 'hourly_rate',
             'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
-            'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking'
+            'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking',
+            'average_rating', 'reviews_count'
         ]
         read_only_fields = ['user']
 
@@ -101,3 +113,19 @@ class PetsitterAvailabilitySerializer(serializers.ModelSerializer):
         model = PetsitterAvailability
         fields = ['id', 'date', 'is_available']
         read_only_fields = ['id']
+
+class ReviewSerializer(serializers.ModelSerializer):
+    reviewer_username = serializers.CharField(source='reviewer.username', read_only=True)
+    reviewer_photo = serializers.SerializerMethodField(read_only=True)
+    petsitter_username = serializers.CharField(source='petsitter.user.username', read_only=True)
+
+    def get_reviewer_photo(self, obj):
+        if obj.reviewer.photo:
+            return obj.reviewer.photo.url
+        return None
+
+    class Meta:
+        model = Review
+        fields = ['id', 'visit', 'petsitter', 'reviewer', 'reviewer_username', 'reviewer_photo',
+                  'petsitter_username', 'rating', 'comment', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'reviewer', 'created_at', 'updated_at']

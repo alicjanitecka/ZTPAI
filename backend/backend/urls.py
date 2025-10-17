@@ -6,6 +6,7 @@ from api.controllers.pet_controller import PetListCreateView, PetUpdateDeleteVie
 from api.controllers.user_controller import CreateUserView, UserListView, UserDetailView, UserDeleteView, UserProfileView
 from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterCreateView, PetsitterMeView, PetsitterDetailView
 from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView, VisitAsOwnerView, VisitAsPetsitterView
+from api.controllers.review_controller import ReviewCreateView, ReviewListForPetsitterView, ReviewDetailView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
@@ -57,6 +58,9 @@ path('api/v1/pets/<int:pk>/', PetUpdateDeleteView.as_view(), name='pet-update-de
 path('api/v1/petsitters/me/', PetsitterMeView.as_view(), name='petsitter-me'),
 path('api/v1/petsitter-availability/', PetsitterAvailabilityListCreateView.as_view(), name='petsitter-availability-list-create'),
 path('api/v1/petsitter-availability/<int:pk>/', PetsitterAvailabilityUpdateDeleteView.as_view(), name='petsitter-availability-update-delete'),
+path('api/v1/reviews/', ReviewCreateView.as_view(), name='review-create'),
+path('api/v1/reviews/petsitter/', ReviewListForPetsitterView.as_view(), name='reviews-for-petsitter'),
+path('api/v1/reviews/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
 ]
 
 if settings.DEBUG:

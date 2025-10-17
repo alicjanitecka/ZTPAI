@@ -343,6 +343,26 @@
   box-shadow: 0 4px 12px rgba(214, 205, 194, 0.3);
 }
 
+.review-btn {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.review-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.review-exists {
+  color: #4CAF50;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Pagination */
 .pagination {
   display: flex;
@@ -462,5 +482,106 @@
 
   .pagination-btn {
     width: 100%;
+  }
+
+  .review-modal {
+    max-width: 96vw;
+  }
+}
+
+/* Review Modal */
+.review-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px;
+  max-width: 550px;
+  width: 90%;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+.rating-selector {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.review-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #eae5df;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Jura', sans-serif;
+  resize: vertical;
+  transition: all 0.3s ease;
+}
+
+.review-textarea:focus {
+  outline: none;
+  border-color: #b7ab9e;
+  box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
+}
+
+.review-textarea::placeholder {
+  color: #999;
+}
+
+.review-form {
+  margin-top: 20px;
+}
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 3000;
+  animation: slideIn 0.3s ease;
+  font-weight: 600;
+}
+
+.success-notification {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.error-notification {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
