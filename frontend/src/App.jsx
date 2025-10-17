@@ -11,6 +11,7 @@ import Logout from "./components/Logout"
 import JoinAsPetsitter from "./pages/JoinAsPetsitter";
 import MyAccount from "./components/MyAccount";
 import AdminPage from "./pages/AdminPage"
+import PetsitterDetail from "./pages/PetsitterDetail"
 
 
 function RegisterAndLogout() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/join-petsitter" element={<JoinAsPetsitter />} />
         <Route path="/account" element={<MyAccount />} />
         <Route path="/admin-users" element={<AdminPage />} />
+        <Route path="/petsitters/:id" element={<PetsitterDetail />} />
         <Route path="*" element={<NotFound />}></Route>
         <Route path="/" element={ 
           <ProtectedRoute>

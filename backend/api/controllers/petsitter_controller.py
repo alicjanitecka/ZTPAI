@@ -6,6 +6,24 @@ from rest_framework import status, permissions
 from api.serializers import PetsitterSerializer
 from api.services.petsitter_service import PetsitterService
 
+class PetsitterDetailView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Get petsitter details by ID.",
+        responses={
+            200: PetsitterSerializer,
+            404: "Not Found",
+            500: "Internal Server Error",
+        }
+    )
+    def get(self, request, pk):
+        petsitter = PetsitterService().get_petsitter_by_id(pk)
+        if not petsitter:
+            return Response({"error": "Petsitter not found"}, status=status.HTTP_404_NOT_FOUND)
+        serializer = PetsitterSerializer(petsitter)
+        return Response(serializer.data)
+
 class PetsitterMeView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

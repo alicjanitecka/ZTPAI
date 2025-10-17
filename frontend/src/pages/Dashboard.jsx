@@ -231,26 +231,28 @@ const handleCancelBooking = () => {
                 {results.length === 0 && <p>No petsitters found.</p>}
                 {results.map(p => (
                 <div key={p.id} className="petsitter-result">
-                    <div className="petsitter-avatar">
-                        <img src={p.photo ? getMediaUrl(p.photo) : defaultAvatar} alt="avatar" />
-                    </div>
-                    <div className="petsitter-info">
-                        <div className="petsitter-name-age">
-                        {p.username && <span className="petsitter-name">{p.username.toUpperCase()}</span>}
-                        {p.age && <span className="petsitter-age">({p.age})</span>}
+                    <Link to={`/petsitters/${p.id}`} className="petsitter-link">
+                        <div className="petsitter-avatar">
+                            <img src={p.photo ? getMediaUrl(p.photo) : defaultAvatar} alt="avatar" />
                         </div>
-                        <div className="petsitter-experience">
-                        <b>Experience:</b> {p.experience ? `${p.experience} years` : "N/A"}
+                        <div className="petsitter-info">
+                            <div className="petsitter-name-age">
+                            {p.username && <span className="petsitter-name">{p.username.toUpperCase()}</span>}
+                            {p.age && <span className="petsitter-age">({p.age})</span>}
+                            </div>
+                            <div className="petsitter-experience">
+                            <b>Experience:</b> {p.experience ? `${p.experience} years` : "N/A"}
+                            </div>
+                            <div className="petsitter-services">
+                            <b>Services offered:</b> {p.services || buildServices(p)}
+                            </div>
+                            <div className="petsitter-location">
+                            <b>Service Location:</b> {p.location || buildLocation(p)}
+                            </div>
                         </div>
-                        <div className="petsitter-services">
-                        <b>Services offered:</b> {p.services || buildServices(p)}
-                        </div>
-                        <div className="petsitter-location">
-                        <b>Service Location:</b> {p.location || buildLocation(p)}
-                        </div>
-                    </div>
+                    </Link>
                     <div className="petsitter-action">
-                    <button className="book-btn" onClick={() => handleBookClick(p)}>
+                    <button className="book-btn" onClick={(e) => { e.stopPropagation(); handleBookClick(p); }}>
                     <span className="plus-icon">+</span> book now
                     </button>
                     </div>
@@ -278,16 +280,60 @@ const handleCancelBooking = () => {
             </div>
             )}
             {showModal && selectedPetsitter && (
-            <div className="modal-overlay">
-                <div className="modal">
-                <h3>Potwierdź rezerwację</h3>
-                <p>
-                    Czy na pewno chcesz zarezerwować wizytę u <b>{selectedPetsitter.username}</b>
-                    {startDate && <> w dniach <b>{endDate}</b></>}?
-                </p>
-                <div className="modal-actions">
-                    <button onClick={handleConfirmBooking} className="confirm-btn">Tak, rezerwuję</button>
-                    <button onClick={handleCancelBooking} className="cancel-btn">Anuluj</button>
+            <div className="modal-overlay" onClick={handleCancelBooking}>
+                <div className="booking-modal" onClick={(e) => e.stopPropagation()}>
+                <h2 className="modal-title">Book a Visit</h2>
+                <p className="modal-subtitle">with {selectedPetsitter.username}</p>
+
+                <div className="booking-form">
+                    <div className="form-group">
+                    <label>Start Date</label>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="form-input"
+                    />
+                    </div>
+
+                    <div className="form-group">
+                    <label>End Date</label>
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="form-input"
+                    />
+                    </div>
+
+                    <div className="form-group">
+                    <label>Care Type</label>
+                    <select
+                        value={careType}
+                        onChange={(e) => setCareType(e.target.value)}
+                        className="form-input"
+                    >
+                        <option value="">Select care type...</option>
+                        {selectedPetsitter.dog_walking && (
+                        <option value="dog_walking">Dog Walking</option>
+                        )}
+                        {selectedPetsitter.care_at_owner_home && (
+                        <option value="care_at_owner_home">Care at Owner's Home</option>
+                        )}
+                        {selectedPetsitter.care_at_petsitter_home && (
+                        <option value="care_at_petsitter_home">Care at Petsitter's Home</option>
+                        )}
+                    </select>
+                    </div>
+
+                    <div className="modal-actions">
+                    <button className="confirm-booking-btn" onClick={handleConfirmBooking}>
+                        Confirm Booking
+                    </button>
+                    <button className="cancel-booking-btn" onClick={handleCancelBooking}>
+                        Cancel
+                    </button>
+                    </div>
                 </div>
                 </div>
             </div>

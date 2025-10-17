@@ -5,6 +5,9 @@ class PetsitterRepository:
     def get_by_user(self, user):
         return Petsitter.objects.filter(user=user).first()
 
+    def get_by_id(self, petsitter_id):
+        return Petsitter.objects.select_related('user').filter(id=petsitter_id).first()
+
     def create(self, user, **kwargs):
         return Petsitter.objects.create(user=user, **kwargs)
 
