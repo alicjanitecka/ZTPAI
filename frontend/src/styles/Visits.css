@@ -1,0 +1,466 @@
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600;700&display=swap');
+
+.visits-page {
+  font-family: 'Jura', sans-serif;
+  background-color: #f7f4f0;
+  min-height: 100vh;
+}
+
+/* Navigation */
+.top-nav {
+  display: flex;
+  justify-content: right;
+  gap: 70px;
+  padding: 20px 30px;
+  background-color: #f7f4f0;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: #5c5c5c;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.top-nav a:hover {
+  color: #b7ab9e;
+}
+
+.top-nav a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #b7ab9e;
+  transition: width 0.3s ease;
+}
+
+.top-nav a:hover:after {
+  width: 100%;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  padding: 4px 10px 0 10px;
+  background-color: #f7f4f0;
+}
+
+.logo {
+  width: 168px;
+  margin-top: -68px;
+}
+
+/* Main Container */
+.visits-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.visits-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #5b5856;
+  font-weight: 700;
+  margin: 30px 0;
+  letter-spacing: 2px;
+}
+
+/* Tabs */
+.visits-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.tab-button {
+  background: #eae5df;
+  color: #5b5856;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Jura', sans-serif;
+}
+
+.tab-button:hover {
+  background: #d6cdc2;
+  transform: translateY(-2px);
+}
+
+.tab-button.active {
+  background: #b7ab9e;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+/* Filters */
+.visits-filters {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: #eae5df;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: #b7ab9e;
+  font-size: 1.1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Jura', sans-serif;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #b7ab9e;
+  box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
+}
+
+.filter-group {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.filter-icon {
+  color: #b7ab9e;
+  font-size: 1.1rem;
+}
+
+.filter-select {
+  padding: 12px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Jura', sans-serif;
+  background: #fff;
+  color: #5b5856;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #b7ab9e;
+  box-shadow: 0 0 0 3px rgba(183, 171, 158, 0.2);
+}
+
+/* Visits List */
+.visits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.loading-message,
+.no-visits-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #5c5c5c;
+  padding: 40px;
+}
+
+/* Visit Card */
+.visit-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.visit-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.visit-card.past-visit {
+  background: #f0f0f0;
+  opacity: 0.7;
+  border-color: #d0d0d0;
+}
+
+.visit-card.canceled-visit {
+  background: #f8f8f8;
+  border-color: #ddd;
+}
+
+.visit-avatar {
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  background: #eae5df;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24px;
+}
+
+.visit-avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.visit-info {
+  flex: 1;
+}
+
+.visit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.visit-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #5b5856;
+}
+
+.visit-status {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-confirmed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-canceled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.visit-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.visit-detail-item {
+  font-size: 1rem;
+  color: #5c5c5c;
+}
+
+.visit-detail-item strong {
+  color: #5b5856;
+  margin-right: 6px;
+}
+
+.past-label {
+  color: #888;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Visit Actions */
+.visit-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 20px;
+}
+
+.action-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Jura', sans-serif;
+  min-width: 120px;
+}
+
+.confirm-btn {
+  background: #b7ab9e;
+  color: #fff;
+}
+
+.confirm-btn:hover {
+  background: #a08c6b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+.cancel-visit-btn {
+  background: #eae5df;
+  color: #5c5c5c;
+}
+
+.cancel-visit-btn:hover {
+  background: #d6cdc2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(214, 205, 194, 0.3);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 40px 0 20px 0;
+}
+
+.pagination-btn {
+  background: #b7ab9e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Jura', sans-serif;
+}
+
+.pagination-btn:hover {
+  background: #a08c6b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(183, 171, 158, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .top-nav {
+    flex-direction: row;
+    gap: 20px;
+    padding: 10px 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .top-nav a {
+    font-size: 0.9rem;
+  }
+
+  .header {
+    justify-content: center;
+    padding: 10px 0 0 0;
+  }
+
+  .logo {
+    width: 120px;
+    margin-top: -30px;
+  }
+
+  .visits-title {
+    font-size: 2rem;
+  }
+
+  .visits-tabs {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .tab-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .visits-filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .search-box {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .filter-select {
+    width: 100%;
+  }
+
+  .visit-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .visit-avatar {
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .visit-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .visit-actions {
+    margin-left: 0;
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  .action-btn {
+    width: 100%;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pagination-btn {
+    width: 100%;
+  }
+}

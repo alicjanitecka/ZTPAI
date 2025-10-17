@@ -81,6 +81,10 @@ class PetsitterSerializer(serializers.ModelSerializer):
         read_only_fields = ['user']
 
 class VisitSerializer(serializers.ModelSerializer):
+    user_username = serializers.CharField(source='user.username', read_only=True)
+    petsitter_username = serializers.CharField(source='petsitter.user.username', read_only=True)
+    petsitter_id = serializers.IntegerField(source='petsitter.id', read_only=True)
+
     class Meta:
         model = Visit
         fields = '__all__'

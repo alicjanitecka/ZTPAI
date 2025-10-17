@@ -5,7 +5,7 @@ from api.controllers.petsitter_availability_controller import PetsitterAvailabil
 from api.controllers.pet_controller import PetListCreateView, PetUpdateDeleteView
 from api.controllers.user_controller import CreateUserView, UserListView, UserDetailView, UserDeleteView, UserProfileView
 from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterCreateView, PetsitterMeView, PetsitterDetailView
-from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView
+from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView, VisitAsOwnerView, VisitAsPetsitterView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
@@ -47,6 +47,8 @@ path("api/v1/petsitters/search/", PetsitterSearchView.as_view(), name="petsitter
 path('api/v1/petsitters/<int:pk>/', PetsitterDetailView.as_view(), name='petsitter-detail'),
 path('api/v1/visits/', VisitCreateView.as_view(), name='visit_create'),
 path('api/v1/my-visits/', VisitListView.as_view(), name='my-visits'),
+path('api/v1/my-visits/as-owner/', VisitAsOwnerView.as_view(), name='visits-as-owner'),
+path('api/v1/my-visits/as-petsitter/', VisitAsPetsitterView.as_view(), name='visits-as-petsitter'),
 path('api/v1/visits/<int:pk>/', VisitUpdateView.as_view(), name='visit-update'),
 path('api/v1/petsitters/', PetsitterCreateView.as_view(), name='petsitter-create'),
 path('api/v1/profile/', UserProfileView.as_view(), name='user-profile'),
