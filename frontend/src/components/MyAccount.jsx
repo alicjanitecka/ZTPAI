@@ -8,6 +8,7 @@ import "../styles/MyAccount.css";
 import api from "../api";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import ImageCropper from "./ImageCropper";
+import Navbar from "./Navbar";
 
 
 function MyAccount() {
@@ -665,15 +666,7 @@ const handleDeletePet = async (id) => {
 
   return (
     <div className="account-wrapper">
-<nav className="top-nav">
-                <Link to="/">HOME</Link>
-                <a href="/visits">MY VISITS</a>
-                {!isPetsitter && (
-                   <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
-                )}
-                <a href="/account">MY ACCOUNT</a>
-                <a href="/logout">LOGOUT</a>
-            </nav>
+      <Navbar />
       <header className="header">
         <div className="logo-container">
           <img src={logo} alt="PetZone Logo" className="logo" />

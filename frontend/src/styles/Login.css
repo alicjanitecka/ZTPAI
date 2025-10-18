@@ -11,6 +11,10 @@ body {
     height: 100vh;
 }
 
+.join-petsitter-wrapper {
+    padding-top: 80px;
+}
+
 .login-left {
     flex: 1;
     background-color: #eae5df;

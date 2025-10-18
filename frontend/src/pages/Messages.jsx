@@ -6,6 +6,7 @@ import '../styles/Messages.css';
 import defaultAvatar from '../assets/default-avatar.svg';
 import { ACCESS_TOKEN } from '../constants';
 import { jwtDecode } from 'jwt-decode';
+import Navbar from '../components/Navbar';
 
 function getMediaUrl(path) {
   if (!path) return null;
@@ -18,34 +19,8 @@ function Messages() {
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState(null);
   const [error, setError] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isPetsitter, setIsPetsitter] = useState(false);
   const navigate = useNavigate();
   const currentUserId = parseInt(localStorage.getItem('user_id'));
-
-  useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
-      const decoded = jwtDecode(token);
-      setIsAdmin(decoded.role === 'admin');
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (!token) return;
-      try {
-        const res = await api.get('/api/v1/profile/', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setIsPetsitter(res.data.is_petsitter || false);
-      } catch (err) {
-        setIsPetsitter(false);
-      }
-    };
-    fetchProfile();
-  }, []);
 
   useEffect(() => {
     fetchChats();
@@ -113,19 +88,7 @@ function Messages() {
 
   return (
     <div className="messages-page">
-      <nav className="top-nav">
-        {isAdmin && (
-          <Link to="/admin-users">ADMIN PANEL</Link>
-        )}
-        <Link to="/">HOME</Link>
-        <a href="/visits">MY VISITS</a>
-        <a href="/messages">MESSAGES</a>
-        {!isPetsitter && (
-          <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
-        )}
-        <a href="/account">MY ACCOUNT</a>
-        <a href="/logout">LOGOUT</a>
-      </nav>
+      <Navbar />
 
       <div className="messages-header">
         <h1>Messages</h1>

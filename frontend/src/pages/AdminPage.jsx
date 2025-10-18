@@ -5,6 +5,7 @@ import "../styles/AdminPage.css";
 import { jwtDecode } from "jwt-decode";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 
 
@@ -93,11 +94,18 @@ function AdminPage() {
         }
     };
     if (!isAdmin) {
-        return <div>Brak uprawnień do zarządzania użytkownikami.</div>;
+        return (
+            <>
+                <Navbar />
+                <div>Brak uprawnień do zarządzania użytkownikami.</div>
+            </>
+        );
     }
     return (
-        <div>
-            <div className="admin-page-container">
+        <>
+            <Navbar />
+            <div className="admin-page-wrapper">
+                <div className="admin-page-container">
             <h1 className="admin-title">Dodaj użytkownika</h1>
 
             {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
@@ -171,8 +179,9 @@ function AdminPage() {
                 </div>
 
 
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 

@@ -12,6 +12,7 @@ import React, { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
 import StarRating from "../components/StarRating";
+import Navbar from "../components/Navbar";
 
 <Link to="/logout">WYLOGUJ</Link>
 
@@ -40,7 +41,6 @@ function getMediaUrl(path) {
 
 function Dashboard() {
     const [searched, setSearched] = useState(false);
-    const [isAdmin, setIsAdmin] = useState(false);
     const [city, setCity] = useState("");
     const [petType, setPetType] = useState("");
     const [careType, setCareType] = useState("");
@@ -49,7 +49,6 @@ function Dashboard() {
     const [minRating, setMinRating] = useState("");
     const [results, setResults] = useState([]);
     const [showModal, setShowModal] = useState(false);
-    const [isPetsitter, setIsPetsitter] = useState(false);
     const [selectedPetsitter, setSelectedPetsitter] = useState(null);
     const handleBookClick = (petsitter) => {
     setSelectedPetsitter(petsitter);
@@ -115,30 +114,11 @@ const handleCancelBooking = () => {
         }
 
     };
-    useEffect(() => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (token) {
-            const decoded = jwtDecode(token);
-            setIsAdmin(decoded.role === "admin");
-        }
-    }, []);
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (!token) return;
-      try {
-        const res = await api.get("/api/v1/profile/", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setIsPetsitter(res.data.is_petsitter || false);
-      } catch (err) {
-        setIsPetsitter(false);
-      }
-    };
-    fetchProfile();
-  }, []);
+
     return (
         <div className="dashboard">
+            <Navbar />
+
             {successMessage && (
                 <div style={{
                     position: "fixed",
@@ -173,18 +153,6 @@ const handleCancelBooking = () => {
                     {errorMessage}
                 </div>
             )}
-            <nav className="top-nav">
-                {isAdmin && (
-                    <Link to="/admin-users">ADMIN PANEL</Link>
-                )}
-                <a href="/visits">MY VISITS</a>
-                <a href="/messages">MESSAGES</a>
-                {!isPetsitter && (
-                    <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
-                )}
-                <a href="/account">MY ACCOUNT</a>
-                <a href="/logout">LOGOUT</a>
-            </nav>
 
             <header className="header">
                 <div className="logo-container">

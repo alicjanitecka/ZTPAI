@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from "../api";
 import { useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
 function UserDetail() {
     const { id } = useParams();
@@ -19,10 +20,13 @@ function UserDetail() {
     }, [id]);
 
     return (
-        <div>
-            <h1>Szczegóły użytkownika</h1>
-            <p>Username: {user.username}</p>
-        </div>
+        <>
+            <Navbar />
+            <div style={{ paddingTop: '80px' }}>
+                <h1>Szczegóły użytkownika</h1>
+                <p>Username: {user.username}</p>
+            </div>
+        </>
     );
 }
 

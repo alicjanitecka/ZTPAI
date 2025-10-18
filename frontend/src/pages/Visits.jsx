@@ -8,11 +8,11 @@ import { Link } from "react-router-dom";
 import api from "../api";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import StarRating from "../components/StarRating";
+import Navbar from "../components/Navbar";
 
 function Visits() {
   const [visits, setVisits] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
-  const [isPetsitter, setIsPetsitter] = useState(false);
   const [activeTab, setActiveTab] = useState("owner"); // "owner" or "petsitter"
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all"); // "all", "pending", "confirmed", "canceled"
@@ -23,6 +23,7 @@ function Visits() {
   const [reviewComment, setReviewComment] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isPetsitter, setIsPetsitter] = useState(false);
 
   const fetchVisits = async (url = null) => {
     setLoading(true);
@@ -167,6 +168,8 @@ function Visits() {
 
   return (
     <div className="visits-page">
+      <Navbar />
+
       {successMessage && (
         <div className="notification success-notification">
           {successMessage}
@@ -177,14 +180,6 @@ function Visits() {
           {errorMessage}
         </div>
       )}
-
-      <nav className="top-nav">
-        <Link to="/">HOME</Link>
-        <Link to="/visits">MY VISITS</Link>
-        {!isPetsitter && <Link to="/join-petsitter">JOIN AS PETSITTER</Link>}
-        <Link to="/account">MY ACCOUNT</Link>
-        <Link to="/logout">LOGOUT</Link>
-      </nav>
 
       <header className="header">
         <div className="logo-container">

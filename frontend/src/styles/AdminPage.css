@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Jura:wght@400;600&display=swap');
 
+.admin-page-wrapper {
+    padding-top: 80px;
+}
+
 .admin-page-container {
     font-family: 'Jura', sans-serif;
     background-color: #f7f4f0;

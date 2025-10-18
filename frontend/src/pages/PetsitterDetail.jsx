@@ -9,6 +9,7 @@ import Chat from "../components/Chat";
 import { ACCESS_TOKEN } from "../constants";
 import { jwtDecode } from "jwt-decode";
 import api from "../api";
+import Navbar from "../components/Navbar";
 
 function getMediaUrl(path) {
   if (!path) return null;
@@ -32,32 +33,6 @@ function PetsitterDetail() {
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [petsitterUserId, setPetsitterUserId] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isPetsitter, setIsPetsitter] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN);
-    if (token) {
-      const decoded = jwtDecode(token);
-      setIsAdmin(decoded.role === 'admin');
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem(ACCESS_TOKEN);
-      if (!token) return;
-      try {
-        const res = await api.get('/api/v1/profile/', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setIsPetsitter(res.data.is_petsitter || false);
-      } catch (err) {
-        setIsPetsitter(false);
-      }
-    };
-    fetchProfile();
-  }, []);
 
   useEffect(() => {
     const fetchPetsitterDetails = async () => {
@@ -145,19 +120,7 @@ function PetsitterDetail() {
 
   return (
     <div className="petsitter-detail-page">
-      <nav className="top-nav">
-        {isAdmin && (
-          <Link to="/admin-users">ADMIN PANEL</Link>
-        )}
-        <Link to="/">HOME</Link>
-        <a href="/visits">MY VISITS</a>
-        <a href="/messages">MESSAGES</a>
-        {!isPetsitter && (
-          <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
-        )}
-        <a href="/account">MY ACCOUNT</a>
-        <a href="/logout">LOGOUT</a>
-      </nav>
+      <Navbar />
 
       {successMessage && (
         <div className="notification success-notification">

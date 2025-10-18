@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN } from "../constants";
 import logo from "../assets/logo.svg";
-import "../styles/Login.css"; 
+import "../styles/Login.css";
+import Navbar from "../components/Navbar"; 
 
 function JoinAsPetsitter() {
   const [description, setDescription] = useState("");
@@ -52,8 +53,11 @@ function JoinAsPetsitter() {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-left">
+    <>
+      <Navbar />
+      <div className="join-petsitter-wrapper">
+        <div className="login-wrapper">
+        <div className="login-left">
         <h2 className="login-title">JOIN AS PETSITTER</h2>
         <form onSubmit={handleSubmit} className="login-form">
           <textarea
@@ -117,10 +121,12 @@ function JoinAsPetsitter() {
           <a href="/">Return to home page</a>
         </p>
       </div>
-      <div className="login-right">
-        <img src={logo} alt="PetZone Logo" className="login-logo" />
+          <div className="login-right">
+            <img src={logo} alt="PetZone Logo" className="login-logo" />
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
