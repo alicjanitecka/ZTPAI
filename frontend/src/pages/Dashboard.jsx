@@ -178,6 +178,7 @@ const handleCancelBooking = () => {
                     <Link to="/admin-users">ADMIN PANEL</Link>
                 )}
                 <a href="/visits">MY VISITS</a>
+                <a href="/messages">MESSAGES</a>
                 {!isPetsitter && (
                     <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
                 )}

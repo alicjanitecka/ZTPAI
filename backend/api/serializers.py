@@ -1,5 +1,5 @@
 
-from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability, Review
+from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability, Review, Chat, Message
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -63,6 +63,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     
 class PetsitterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     city = serializers.CharField(source='user.city', read_only=True)
     photo = serializers.SerializerMethodField()
     average_rating = serializers.SerializerMethodField()
@@ -85,7 +86,7 @@ class PetsitterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Petsitter
         fields = [
-            'id', 'username', 'city', 'photo', 'description', 'hourly_rate',
+            'id', 'user_id', 'username', 'city', 'photo', 'description', 'hourly_rate',
             'is_dog_sitter', 'is_cat_sitter', 'is_rodent_sitter',
             'care_at_owner_home', 'care_at_petsitter_home', 'dog_walking',
             'average_rating', 'reviews_count'
@@ -129,3 +130,57 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = ['id', 'visit', 'petsitter', 'reviewer', 'reviewer_username', 'reviewer_photo',
                   'petsitter_username', 'rating', 'comment', 'created_at', 'updated_at']
         read_only_fields = ['id', 'reviewer', 'created_at', 'updated_at']
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender_username = serializers.CharField(source='sender.username', read_only=True)
+    sender_photo = serializers.SerializerMethodField(read_only=True)
+
+    def get_sender_photo(self, obj):
+        if obj.sender.photo:
+            return obj.sender.photo.url
+        return None
+
+    class Meta:
+        model = Message
+        fields = ['id', 'chat', 'sender', 'sender_username', 'sender_photo',
+                  'content', 'is_read', 'created_at']
+        read_only_fields = ['id', 'sender', 'created_at']
+
+
+class ChatSerializer(serializers.ModelSerializer):
+    participant1_username = serializers.CharField(source='participant1.username', read_only=True)
+    participant2_username = serializers.CharField(source='participant2.username', read_only=True)
+    participant1_photo = serializers.SerializerMethodField(read_only=True)
+    participant2_photo = serializers.SerializerMethodField(read_only=True)
+    last_message = serializers.SerializerMethodField(read_only=True)
+    unread_count = serializers.SerializerMethodField(read_only=True)
+
+    def get_participant1_photo(self, obj):
+        if obj.participant1.photo:
+            return obj.participant1.photo.url
+        return None
+
+    def get_participant2_photo(self, obj):
+        if obj.participant2.photo:
+            return obj.participant2.photo.url
+        return None
+
+    def get_last_message(self, obj):
+        last_msg = obj.messages.last()
+        if last_msg:
+            return MessageSerializer(last_msg).data
+        return None
+
+    def get_unread_count(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.messages.filter(is_read=False).exclude(sender=request.user).count()
+        return 0
+
+    class Meta:
+        model = Chat
+        fields = ['id', 'participant1', 'participant2', 'participant1_username',
+                  'participant2_username', 'participant1_photo', 'participant2_photo',
+                  'last_message', 'unread_count', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']

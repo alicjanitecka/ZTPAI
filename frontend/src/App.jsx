@@ -12,6 +12,7 @@ import JoinAsPetsitter from "./pages/JoinAsPetsitter";
 import MyAccount from "./components/MyAccount";
 import AdminPage from "./pages/AdminPage"
 import PetsitterDetail from "./pages/PetsitterDetail"
+import Messages from "./pages/Messages"
 
 
 function RegisterAndLogout() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="/register" element={<RegisterAndLogout />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/visits" element={<Visits />} />
+        <Route path="/messages" element={<Messages />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/join-petsitter" element={<JoinAsPetsitter />} />
         <Route path="/account" element={<MyAccount />} />

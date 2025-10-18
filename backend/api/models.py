@@ -87,3 +87,37 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review by {self.reviewer.username} for {self.petsitter.user.username} - {self.rating} stars"
+
+
+class Chat(models.Model):
+    participant1 = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='chats_as_participant1', db_index=True)
+    participant2 = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='chats_as_participant2', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'chat'
+        unique_together = ['participant1', 'participant2']
+        ordering = ['-updated_at']
+
+    def __str__(self):
+        return f"Chat between {self.participant1.username} and {self.participant2.username}"
+
+    def get_other_participant(self, user):
+        """Returns the other participant in the chat"""
+        return self.participant2 if self.participant1 == user else self.participant1
+
+
+class Message(models.Model):
+    chat = models.ForeignKey('Chat', on_delete=models.CASCADE, related_name='messages', db_index=True)
+    sender = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='sent_messages')
+    content = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'message'
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Message from {self.sender.username} at {self.created_at}"

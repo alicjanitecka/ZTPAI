@@ -4,7 +4,43 @@
   font-family: 'Jura', sans-serif;
   background-color: #f7f4f0;
   min-height: 100vh;
-  padding: 20px;
+  padding: 0;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: right;
+  gap: 70px;
+  padding: 20px 30px;
+  background-color: #f7f4f0;
+}
+
+.top-nav a {
+  text-decoration: none;
+  color: #5c5c5c;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+  position: relative;
+}
+
+.top-nav a:hover {
+  color: #b7ab9e;
+}
+
+.top-nav a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: #b7ab9e;
+  transition: width 0.3s ease;
+}
+
+.top-nav a:hover:after {
+  width: 100%;
 }
 
 .loading-container,
@@ -54,7 +90,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 24px;
+  margin: 0 20px 24px 20px;
   transition: all 0.3s ease;
   font-family: 'Jura', sans-serif;
 }
@@ -134,7 +170,14 @@
   color: #b7ab9e;
 }
 
-.book-button {
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.book-button,
+.chat-button {
   background: #b7ab9e;
   color: #fff;
   border: none;
@@ -143,16 +186,27 @@
   font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 12px;
-  align-self: flex-start;
   transition: all 0.3s ease;
   font-family: 'Jura', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 16px 32px;
 }
 
 .book-button:hover {
   background: #a08c6b;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(183, 171, 158, 0.4);
+}
+
+.chat-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
 .petsitter-content {
@@ -457,6 +511,13 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .top-nav {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 10px 10px 20px 50px;
+  }
+
   .petsitter-header {
     flex-direction: column;
     text-align: center;
@@ -476,8 +537,14 @@
     align-items: center;
   }
 
-  .book-button {
-    align-self: stretch;
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .book-button,
+  .chat-button {
+    width: 100%;
   }
 
   .petsitter-content {

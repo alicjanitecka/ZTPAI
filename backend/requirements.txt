@@ -16,3 +16,7 @@ factory-boy==3.3.0
 pytest-factoryboy==2.5.0
 pytest-cov==4.0.0
 Pillow==10.3.0
+channels==4.0.0
+channels-redis==4.1.0
+redis==5.0.1
+daphne==4.0.0

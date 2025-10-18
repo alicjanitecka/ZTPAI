@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
+import { jwtDecode } from "jwt-decode";
 import "../styles/Login.css";
 import logo from "../assets/logo.svg";
 
@@ -20,6 +21,11 @@ function Login() {
             });
             localStorage.setItem(ACCESS_TOKEN, res.data.access);
             localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
+
+            // Decode JWT to get user_id
+            const decoded = jwtDecode(res.data.access);
+            localStorage.setItem("user_id", decoded.user_id);
+
             navigate("/");
         } catch (err) {
             setError("Login failed. Please check your credentials and try again.");

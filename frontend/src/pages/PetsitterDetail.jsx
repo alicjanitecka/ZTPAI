@@ -3,8 +3,12 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/PetsitterDetail.css";
 import defaultAvatar from "../assets/default-avatar.svg";
-import { FaArrowLeft, FaMapMarkerAlt, FaDollarSign, FaClock, FaPaw } from "react-icons/fa";
+import { FaArrowLeft, FaMapMarkerAlt, FaDollarSign, FaClock, FaPaw, FaComments } from "react-icons/fa";
 import StarRating from "../components/StarRating";
+import Chat from "../components/Chat";
+import { ACCESS_TOKEN } from "../constants";
+import { jwtDecode } from "jwt-decode";
+import api from "../api";
 
 function getMediaUrl(path) {
   if (!path) return null;
@@ -26,6 +30,34 @@ function PetsitterDetail() {
   const [errorMessage, setErrorMessage] = useState("");
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [petsitterUserId, setPetsitterUserId] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isPetsitter, setIsPetsitter] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    if (token) {
+      const decoded = jwtDecode(token);
+      setIsAdmin(decoded.role === 'admin');
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (!token) return;
+      try {
+        const res = await api.get('/api/v1/profile/', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setIsPetsitter(res.data.is_petsitter || false);
+      } catch (err) {
+        setIsPetsitter(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const fetchPetsitterDetails = async () => {
@@ -113,6 +145,20 @@ function PetsitterDetail() {
 
   return (
     <div className="petsitter-detail-page">
+      <nav className="top-nav">
+        {isAdmin && (
+          <Link to="/admin-users">ADMIN PANEL</Link>
+        )}
+        <Link to="/">HOME</Link>
+        <a href="/visits">MY VISITS</a>
+        <a href="/messages">MESSAGES</a>
+        {!isPetsitter && (
+          <Link to="/join-petsitter">JOIN AS PETSITTER</Link>
+        )}
+        <a href="/account">MY ACCOUNT</a>
+        <a href="/logout">LOGOUT</a>
+      </nav>
+
       {successMessage && (
         <div className="notification success-notification">
           {successMessage}
@@ -163,9 +209,14 @@ function PetsitterDetail() {
               </div>
             )}
 
-            <button className="book-button" onClick={() => setShowBookingModal(true)}>
-              Book Now
-            </button>
+            <div className="action-buttons">
+              <button className="book-button" onClick={() => setShowBookingModal(true)}>
+                Book Now
+              </button>
+              <button className="chat-button" onClick={() => setShowChat(true)}>
+                <FaComments /> Chat
+              </button>
+            </div>
           </div>
         </div>
 
@@ -308,6 +359,14 @@ function PetsitterDetail() {
             </div>
           </div>
         </div>
+      )}
+
+      {showChat && petsitter && (
+        <Chat
+          otherUserId={petsitter.user_id}
+          otherUserName={petsitter.username}
+          onClose={() => setShowChat(false)}
+        />
       )}
     </div>
   );

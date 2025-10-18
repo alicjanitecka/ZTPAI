@@ -7,6 +7,7 @@ from api.controllers.user_controller import CreateUserView, UserListView, UserDe
 from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterCreateView, PetsitterMeView, PetsitterDetailView
 from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView, VisitAsOwnerView, VisitAsPetsitterView
 from api.controllers.review_controller import ReviewCreateView, ReviewListForPetsitterView, ReviewDetailView
+from api.controllers.chat_controller import ChatListView, ChatDetailView, ChatCreateView, ChatMessagesView, UnreadCountView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
@@ -61,6 +62,11 @@ path('api/v1/petsitter-availability/<int:pk>/', PetsitterAvailabilityUpdateDelet
 path('api/v1/reviews/', ReviewCreateView.as_view(), name='review-create'),
 path('api/v1/reviews/petsitter/', ReviewListForPetsitterView.as_view(), name='reviews-for-petsitter'),
 path('api/v1/reviews/<int:pk>/', ReviewDetailView.as_view(), name='review-detail'),
+path('api/v1/chats/', ChatListView.as_view(), name='chat-list'),
+path('api/v1/chats/create/', ChatCreateView.as_view(), name='chat-create'),
+path('api/v1/chats/<int:pk>/', ChatDetailView.as_view(), name='chat-detail'),
+path('api/v1/chats/<int:pk>/messages/', ChatMessagesView.as_view(), name='chat-messages'),
+path('api/v1/chats/unread-count/', UnreadCountView.as_view(), name='unread-count'),
 ]
 
 if settings.DEBUG:
