@@ -3,7 +3,7 @@ import axios from "axios";
 import logo from "../assets/logo.svg";
 import defaultAvatar from "../assets/default-avatar.svg";
 import { ACCESS_TOKEN } from "../constants";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import "../styles/MyAccount.css";
 import api from "../api";
 import AvailabilityCalendar from "./AvailabilityCalendar";
@@ -12,6 +12,7 @@ import Navbar from "./Navbar";
 
 
 function MyAccount() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [availabilityDate, setAvailabilityDate] = useState("");
 const [availabilityList, setAvailabilityList] = useState([]);
 const [pendingAvailability, setPendingAvailability] = useState([]);
@@ -50,6 +51,18 @@ const [pendingAvailability, setPendingAvailability] = useState([]);
   const [showCropper, setShowCropper] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(null);
   const [cropperType, setCropperType] = useState(null); // 'profile', 'pet', 'editPet'
+
+  // Read tab from URL on mount
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'pets') {
+      setActiveTab('my pets');
+    } else if (tab === 'services') {
+      setActiveTab('services');
+    } else {
+      setActiveTab('personal data');
+    }
+  }, [searchParams]);
 
   const getMediaUrl = (path) => {
     if (!path) return null;
@@ -674,15 +687,25 @@ const handleDeletePet = async (id) => {
       </header>
       <div className="account-container">
         <div className="account-tabs">
-          {tabs.map(tab => (
-            <div
-              key={tab}
-              className={`account-tab${activeTab === tab ? " active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </div>
-          ))}
+          {tabs.map(tab => {
+            const tabParam = tab === 'my pets' ? 'pets' : tab === 'services' ? 'services' : '';
+            return (
+              <div
+                key={tab}
+                className={`account-tab${activeTab === tab ? " active" : ""}`}
+                onClick={() => {
+                  setActiveTab(tab);
+                  if (tabParam) {
+                    setSearchParams({ tab: tabParam });
+                  } else {
+                    setSearchParams({});
+                  }
+                }}
+              >
+                {tab}
+              </div>
+            );
+          })}
         </div>
         <div style={{ flex: 1, padding: "0 12px" }}>
           {loading ? <p>Loading...</p> : renderTab()}
