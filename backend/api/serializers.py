@@ -97,6 +97,20 @@ class VisitSerializer(serializers.ModelSerializer):
     user_username = serializers.CharField(source='user.username', read_only=True)
     petsitter_username = serializers.CharField(source='petsitter.user.username', read_only=True)
     petsitter_id = serializers.IntegerField(source='petsitter.id', read_only=True)
+    review = serializers.SerializerMethodField(read_only=True)
+
+    def get_review(self, obj):
+        try:
+            review = obj.review
+            return {
+                'id': review.id,
+                'rating': review.rating,
+                'comment': review.comment,
+                'created_at': review.created_at,
+                'updated_at': review.updated_at
+            }
+        except:
+            return None
 
     class Meta:
         model = Visit

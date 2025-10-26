@@ -364,6 +364,50 @@
   gap: 4px;
 }
 
+.review-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.review-exists-label {
+  color: #4CAF50;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.review-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-review-btn {
+  background: #2196F3;
+  color: #fff;
+  padding: 8px 20px;
+  min-width: 90px;
+}
+
+.edit-review-btn:hover {
+  background: #1976D2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.delete-review-btn {
+  background: #f44336;
+  color: #fff;
+  padding: 8px 20px;
+  min-width: 90px;
+}
+
+.delete-review-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
 /* Pagination */
 .pagination {
   display: flex;

@@ -24,6 +24,7 @@ function Visits() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isPetsitter, setIsPetsitter] = useState(false);
+  const [editingReview, setEditingReview] = useState(null);
 
   const fetchVisits = async (url = null) => {
     setLoading(true);
@@ -96,25 +97,68 @@ function Visits() {
 
     const token = localStorage.getItem(ACCESS_TOKEN);
     try {
-      await axios.post(
-        "http://localhost:8000/api/v1/reviews/",
-        {
-          visit: selectedVisitForReview.id,
-          petsitter: selectedVisitForReview.petsitter,
-          rating: reviewRating,
-          comment: reviewComment,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSuccessMessage("Review submitted successfully!");
+      if (editingReview) {
+        // Update existing review
+        await axios.patch(
+          `http://localhost:8000/api/v1/reviews/${editingReview.id}/`,
+          {
+            rating: reviewRating,
+            comment: reviewComment,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setSuccessMessage("Review updated successfully!");
+      } else {
+        // Create new review
+        await axios.post(
+          "http://localhost:8000/api/v1/reviews/",
+          {
+            visit: selectedVisitForReview.id,
+            petsitter: selectedVisitForReview.petsitter,
+            rating: reviewRating,
+            comment: reviewComment,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setSuccessMessage("Review submitted successfully!");
+      }
       setTimeout(() => setSuccessMessage(""), 3000);
       setShowReviewModal(false);
       setSelectedVisitForReview(null);
+      setEditingReview(null);
       setReviewRating(0);
       setReviewComment("");
-      fetchVisits(); // Refresh to show review was added
+      fetchVisits(); // Refresh to show review was added/updated
     } catch (err) {
       setErrorMessage(err.response?.data?.error || "Error submitting review");
+      setTimeout(() => setErrorMessage(""), 3000);
+    }
+  };
+
+  const handleEditReview = (visit) => {
+    setSelectedVisitForReview(visit);
+    setEditingReview(visit.review);
+    setReviewRating(visit.review.rating);
+    setReviewComment(visit.review.comment || "");
+    setShowReviewModal(true);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) {
+      return;
+    }
+
+    const token = localStorage.getItem(ACCESS_TOKEN);
+    try {
+      await axios.delete(
+        `http://localhost:8000/api/v1/reviews/${reviewId}/`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setSuccessMessage("Review deleted successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      fetchVisits(); // Refresh
+    } catch (err) {
+      setErrorMessage(err.response?.data?.error || "Error deleting review");
       setTimeout(() => setErrorMessage(""), 3000);
     }
   };
@@ -331,9 +375,25 @@ function Visits() {
                         Leave Review
                       </button>
                     )}
-                    {/* Show if review already exists */}
-                    {v.review && (
-                      <span className="review-exists">✓ Reviewed</span>
+                    {/* Show if review already exists with Edit/Delete options */}
+                    {v.review && activeTab === "owner" && (
+                      <div className="review-actions">
+                        <span className="review-exists-label">Review submitted</span>
+                        <div className="review-btn-group">
+                          <button
+                            className="action-btn edit-review-btn"
+                            onClick={() => handleEditReview(v)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="action-btn delete-review-btn"
+                            onClick={() => handleDeleteReview(v.review.id)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -362,7 +422,7 @@ function Visits() {
       {showReviewModal && selectedVisitForReview && (
         <div className="modal-overlay" onClick={() => setShowReviewModal(false)}>
           <div className="review-modal" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">Leave a Review</h2>
+            <h2 className="modal-title">{editingReview ? 'Edit Review' : 'Leave a Review'}</h2>
             <p className="modal-subtitle">
               for {selectedVisitForReview.petsitter_username}
             </p>
@@ -393,11 +453,16 @@ function Visits() {
 
               <div className="modal-actions">
                 <button className="confirm-booking-btn" onClick={handleSubmitReview}>
-                  Submit Review
+                  {editingReview ? 'Update Review' : 'Submit Review'}
                 </button>
                 <button
                   className="cancel-booking-btn"
-                  onClick={() => setShowReviewModal(false)}
+                  onClick={() => {
+                    setShowReviewModal(false);
+                    setEditingReview(null);
+                    setReviewRating(0);
+                    setReviewComment("");
+                  }}
                 >
                   Cancel
                 </button>
