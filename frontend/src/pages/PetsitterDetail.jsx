@@ -33,6 +33,7 @@ function PetsitterDetail() {
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [petsitterUserId, setPetsitterUserId] = useState(null);
+  const [oneDayOnly, setOneDayOnly] = useState(false);
 
   useEffect(() => {
     const fetchPetsitterDetails = async () => {
@@ -67,6 +68,13 @@ function PetsitterDetail() {
   const handleBooking = async () => {
     if (!startDate || !endDate || !careType) {
       setErrorMessage("Please fill in all booking details!");
+      setTimeout(() => setErrorMessage(""), 4000);
+      return;
+    }
+
+    // Validate date range
+    if (new Date(startDate) > new Date(endDate)) {
+      setErrorMessage("Start date must be before or equal to end date!");
       setTimeout(() => setErrorMessage(""), 4000);
       return;
     }
@@ -276,9 +284,27 @@ function PetsitterDetail() {
                 <input
                   type="date"
                   value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    if (oneDayOnly) {
+                      setEndDate(e.target.value);
+                    }
+                  }}
                   className="form-input"
                 />
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', marginTop: '8px' }}>
+                  <input
+                  type="checkbox"
+                  checked={oneDayOnly}
+                  onChange={e => {
+                    setOneDayOnly(e.target.checked);
+                    if (e.target.checked && startDate) {
+                      setEndDate(startDate);
+                    }
+                  }}
+                  />
+                  One day only
+                </label>
               </div>
 
               <div className="form-group">
@@ -288,6 +314,8 @@ function PetsitterDetail() {
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   className="form-input"
+                  disabled={oneDayOnly}
+                  style={{ opacity: oneDayOnly ? 0.6 : 1 }}
                 />
               </div>
 

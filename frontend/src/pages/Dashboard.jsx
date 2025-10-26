@@ -50,6 +50,7 @@ function Dashboard() {
     const [results, setResults] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedPetsitter, setSelectedPetsitter] = useState(null);
+    const [oneDayOnly, setOneDayOnly] = useState(false);
     const handleBookClick = (petsitter) => {
     setSelectedPetsitter(petsitter);
     setShowModal(true);
@@ -60,6 +61,13 @@ function Dashboard() {
   const handleConfirmBooking = async () => {
   if (!selectedPetsitter || !startDate || !endDate || !careType) {
     setErrorMessage("Please complete all booking details!");
+    setTimeout(() => setErrorMessage(""), 4000);
+    return;
+  }
+
+  // Validate date range
+  if (new Date(startDate) > new Date(endDate)) {
+    setErrorMessage("Start date must be before or equal to end date!");
     setTimeout(() => setErrorMessage(""), 4000);
     return;
   }
@@ -97,6 +105,21 @@ const handleCancelBooking = () => {
 
     const handleSearch = async (e) => {
         e.preventDefault();
+
+        // Validate that dates are provided
+        if (!startDate || !endDate) {
+            setErrorMessage("Please provide both start and end dates!");
+            setTimeout(() => setErrorMessage(""), 4000);
+            return;
+        }
+
+        // Validate date range
+        if (new Date(startDate) > new Date(endDate)) {
+            setErrorMessage("Start date must be before or equal to end date!");
+            setTimeout(() => setErrorMessage(""), 4000);
+            return;
+        }
+
         setSearched(true);
         try {
             const params = {};
@@ -162,17 +185,39 @@ const handleCancelBooking = () => {
 
             <div className="filters-background">
                 <form className="filters" onSubmit={handleSearch}>
-                    <input
-                    type="date"
-                    value={startDate}
-                    onChange={e => setStartDate(e.target.value)}
-                    placeholder="Start date"
-                    />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <input
+                        type="date"
+                        value={startDate}
+                        onChange={e => {
+                            setStartDate(e.target.value);
+                            if (oneDayOnly) {
+                                setEndDate(e.target.value);
+                            }
+                        }}
+                        placeholder="Start date"
+                        />
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#5b5856' }}>
+                            <input
+                            type="checkbox"
+                            checked={oneDayOnly}
+                            onChange={e => {
+                                setOneDayOnly(e.target.checked);
+                                if (e.target.checked && startDate) {
+                                    setEndDate(startDate);
+                                }
+                            }}
+                            />
+                            One day only
+                        </label>
+                    </div>
                     <input
                     type="date"
                     value={endDate}
                     onChange={e => setEndDate(e.target.value)}
                     placeholder="End date"
+                    disabled={oneDayOnly}
+                    style={{ opacity: oneDayOnly ? 0.6 : 1 }}
                     />
 
                     <input
@@ -277,9 +322,27 @@ const handleCancelBooking = () => {
                     <input
                         type="date"
                         value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e) => {
+                            setStartDate(e.target.value);
+                            if (oneDayOnly) {
+                                setEndDate(e.target.value);
+                            }
+                        }}
                         className="form-input"
                     />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', marginTop: '8px' }}>
+                        <input
+                        type="checkbox"
+                        checked={oneDayOnly}
+                        onChange={e => {
+                            setOneDayOnly(e.target.checked);
+                            if (e.target.checked && startDate) {
+                                setEndDate(startDate);
+                            }
+                        }}
+                        />
+                        One day only
+                    </label>
                     </div>
 
                     <div className="form-group">
@@ -289,6 +352,8 @@ const handleCancelBooking = () => {
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         className="form-input"
+                        disabled={oneDayOnly}
+                        style={{ opacity: oneDayOnly ? 0.6 : 1 }}
                     />
                     </div>
 
