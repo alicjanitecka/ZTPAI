@@ -8,6 +8,7 @@ from api.controllers.petsitter_controller import PetsitterSearchView, PetsitterC
 from api.controllers.visit_controller import VisitCreateView, VisitListView, VisitUpdateView, VisitAsOwnerView, VisitAsPetsitterView
 from api.controllers.review_controller import ReviewCreateView, ReviewListForPetsitterView, ReviewDetailView
 from api.controllers.chat_controller import ChatListView, ChatDetailView, ChatCreateView, ChatMessagesView, UnreadCountView
+from api.controllers.notification_controller import NotificationListView, NotificationUnreadCountView, NotificationMarkAsReadView, NotificationMarkAllAsReadView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.serializers import CustomTokenObtainPairSerializer
 from drf_yasg.views import get_schema_view
@@ -67,6 +68,10 @@ path('api/v1/chats/create/', ChatCreateView.as_view(), name='chat-create'),
 path('api/v1/chats/<int:pk>/', ChatDetailView.as_view(), name='chat-detail'),
 path('api/v1/chats/<int:pk>/messages/', ChatMessagesView.as_view(), name='chat-messages'),
 path('api/v1/chats/unread-count/', UnreadCountView.as_view(), name='unread-count'),
+path('api/v1/notifications/', NotificationListView.as_view(), name='notification-list'),
+path('api/v1/notifications/unread-count/', NotificationUnreadCountView.as_view(), name='notification-unread-count'),
+path('api/v1/notifications/<int:pk>/read/', NotificationMarkAsReadView.as_view(), name='notification-mark-read'),
+path('api/v1/notifications/read-all/', NotificationMarkAllAsReadView.as_view(), name='notification-mark-all-read'),
 ]
 
 if settings.DEBUG:

@@ -1,5 +1,6 @@
 from api.repositories.visit_repository import VisitRepository
-
+from api.services.notification_service import NotificationService
+from api.services.email_service import EmailService
 
 
 class VisitService:
@@ -7,7 +8,15 @@ class VisitService:
         self.repo = VisitRepository()
 
     def create_visit(self, user, **kwargs):
-        return self.repo.create(user, **kwargs)
+        visit = self.repo.create(user, **kwargs)
+
+        # Send notifications
+        NotificationService().create_visit_notification(visit)
+
+        # Send emails
+        EmailService.send_visit_created_email(visit)
+
+        return visit
 
     def list_visits_for_user(self, user):
         return self.repo.list_all_related(user)

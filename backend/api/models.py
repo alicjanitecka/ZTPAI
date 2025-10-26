@@ -121,3 +121,27 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender.username} at {self.created_at}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('visit_created', 'Visit Created'),
+        ('visit_confirmed', 'Visit Confirmed'),
+        ('visit_canceled', 'Visit Canceled'),
+        ('review_received', 'Review Received'),
+    )
+
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='notifications', db_index=True)
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    visit = models.ForeignKey('Visit', on_delete=models.CASCADE, null=True, blank=True, related_name='notifications')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'notification'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.title}"

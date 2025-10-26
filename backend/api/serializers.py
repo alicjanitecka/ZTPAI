@@ -1,5 +1,5 @@
 
-from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability, Review, Chat, Message
+from api.models import CustomUser, Petsitter, Visit, Pet, PetsitterAvailability, Review, Chat, Message, Notification
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -184,3 +184,10 @@ class ChatSerializer(serializers.ModelSerializer):
                   'participant2_username', 'participant1_photo', 'participant2_photo',
                   'last_message', 'unread_count', 'created_at', 'updated_at']
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ['id', 'notification_type', 'title', 'message', 'visit', 'is_read', 'created_at']
+        read_only_fields = ['id', 'user', 'created_at']

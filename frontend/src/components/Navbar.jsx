@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUser, FaEnvelope, FaPaw, FaCog, FaSignOutAlt, FaBriefcase } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaPaw, FaCog, FaSignOutAlt, FaBriefcase, FaBell } from 'react-icons/fa';
 import api from '../api';
 import '../styles/Navbar.css';
+import NotificationDropdown from './NotificationDropdown';
 
 function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPetsitter, setIsPetsitter] = useState(false);
   const dropdownRef = useRef(null);
+  const notificationRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -55,20 +59,38 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
+    const fetchNotificationCount = async () => {
+      try {
+        const res = await api.get('/api/v1/notifications/unread-count/');
+        setUnreadNotificationCount(res.data.unread_count);
+      } catch (err) {
+        console.error('Failed to fetch notification count:', err);
+      }
+    };
+    fetchNotificationCount();
+
+    const interval = setInterval(fetchNotificationCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
+      if (notificationRef.current && !notificationRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
     };
 
-    if (showDropdown) {
+    if (showDropdown || showNotifications) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showDropdown]);
+  }, [showDropdown, showNotifications]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -94,6 +116,27 @@ function Navbar() {
       </div>
 
       <div className="navbar-right">
+        <div className="notification-menu" ref={notificationRef}>
+          <button
+            className="navbar-icon-btn notifications-btn"
+            onClick={() => setShowNotifications(!showNotifications)}
+          >
+            <FaBell />
+            {unreadNotificationCount > 0 && (
+              <span className="badge">{unreadNotificationCount > 9 ? '9+' : unreadNotificationCount}</span>
+            )}
+          </button>
+
+          {showNotifications && (
+            <NotificationDropdown
+              onClose={() => setShowNotifications(false)}
+              onNotificationRead={() => {
+                setUnreadNotificationCount(Math.max(0, unreadNotificationCount - 1));
+              }}
+            />
+          )}
+        </div>
+
         <Link to="/messages" className="navbar-icon-btn messages-btn">
           <FaEnvelope />
           {unreadCount > 0 && (
