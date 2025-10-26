@@ -75,7 +75,7 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
-    padding: 10px 20px;
+    padding: 10px 20px 24px 20px;
     max-width: 1400px;
     border-radius: 12px;
     background-color: #eae5df;

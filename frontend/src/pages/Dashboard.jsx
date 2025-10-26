@@ -185,7 +185,7 @@ const handleCancelBooking = () => {
 
             <div className="filters-background">
                 <form className="filters" onSubmit={handleSearch}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
                         <input
                         type="date"
                         value={startDate}
@@ -197,7 +197,19 @@ const handleCancelBooking = () => {
                         }}
                         placeholder="Start date"
                         />
-                        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#5b5856' }}>
+                        <label style={{
+                            position: 'absolute',
+                            bottom: '-18px',
+                            left: '2px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '0.72rem',
+                            color: '#5b5856',
+                            whiteSpace: 'nowrap',
+                            background: '#eae5df',
+                            padding: '0 2px'
+                        }}>
                             <input
                             type="checkbox"
                             checked={oneDayOnly}
@@ -207,6 +219,7 @@ const handleCancelBooking = () => {
                                     setEndDate(startDate);
                                 }
                             }}
+                            style={{ width: '11px', height: '11px', margin: 0 }}
                             />
                             One day only
                         </label>

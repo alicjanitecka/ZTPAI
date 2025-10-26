@@ -72,12 +72,13 @@ class PetsitterSearchView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @swagger_auto_schema(
-        operation_description="Search for petsitters by city, pet type, care type, date, and minimum rating.",
+        operation_description="Search for petsitters by city, pet type, care type, date range, and minimum rating.",
         manual_parameters=[
             openapi.Parameter('city', openapi.IN_QUERY, description="City", type=openapi.TYPE_STRING),
             openapi.Parameter('pet_type', openapi.IN_QUERY, description="Pet type", type=openapi.TYPE_STRING),
             openapi.Parameter('care_type', openapi.IN_QUERY, description="Care type", type=openapi.TYPE_STRING),
-            openapi.Parameter('date', openapi.IN_QUERY, description="Date (YYYY-MM-DD)", type=openapi.TYPE_STRING),
+            openapi.Parameter('start_date', openapi.IN_QUERY, description="Start date (YYYY-MM-DD)", type=openapi.TYPE_STRING),
+            openapi.Parameter('end_date', openapi.IN_QUERY, description="End date (YYYY-MM-DD)", type=openapi.TYPE_STRING),
             openapi.Parameter('min_rating', openapi.IN_QUERY, description="Minimum rating (1-5)", type=openapi.TYPE_NUMBER),
         ],
         responses={
@@ -92,9 +93,10 @@ class PetsitterSearchView(APIView):
         city = request.query_params.get('city')
         pet_type = request.query_params.get('pet_type')
         care_type = request.query_params.get('care_type')
-        date = request.query_params.get('date')
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
         min_rating = request.query_params.get('min_rating')
-        petsitters = PetsitterService().search_petsitters(city, pet_type, care_type, date, min_rating)
+        petsitters = PetsitterService().search_petsitters(city, pet_type, care_type, start_date, end_date, min_rating)
         serializer = PetsitterSerializer(petsitters, many=True)
         return Response(serializer.data)
     
